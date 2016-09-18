@@ -1,6 +1,22 @@
 <?php
 class ControllerCheckoutCheckout extends Controller {
 	public function index() {
+		
+		/////////////////////////////////
+		
+		if(isset($_POST)) {
+			if(isset($_POST['product_id'])) {
+				$produ['product_id'] = $_POST['product_id'];
+				if(isset($_POST['option'])) {
+					$produ['option'] = $_POST['option'];
+				}
+				$this->cart->clear();
+				$this->addproduct($produ);
+			}
+		}
+		///////////////////////////////////
+		
+
 		// Validate cart has products and has stock.
 		if ((!$this->cart->hasProducts() && empty($this->session->data['vouchers'])) || (!$this->cart->hasStock() && !$this->config->get('config_stock_checkout'))) {
 			$this->response->redirect($this->url->link('checkout/cart'));
@@ -96,6 +112,58 @@ class ControllerCheckoutCheckout extends Controller {
 		$this->response->setOutput($this->load->view('checkout/checkout', $data));
 	}
 
+	
+	///////////////////////////////////////
+
+		public function addproduct($products) {
+		if (isset($products['product_id'])) {
+			$product_id = (int)$products['product_id'];
+		} else {
+			$product_id = 0;
+		}
+		
+		$this->load->model('catalog/product');
+
+		$product_info = $this->model_catalog_product->getProduct($product_id);
+		
+		if ($product_info) {
+			if (isset($products['quantity']) && ((int)$products['quantity'] >= $product_info['minimum'])) {
+				$quantity = (int)$products['quantity'];
+			} else {
+				$quantity = $product_info['minimum'] ? $product_info['minimum'] : 1;
+			}
+
+
+			if (isset($products['option'])) {
+				$option = array_filter($products['option']);
+			} else {
+				$option = array();
+			}
+			
+			$product_options = $this->model_catalog_product->getProductOptions($products['product_id']);
+
+			foreach ($product_options as $product_option) {
+				if ($product_option['required'] && empty($option[$product_option['product_option_id']])) {
+					$json['error']['option'][$product_option['product_option_id']] = sprintf($this->language->get('error_required'), $product_option['name']);
+				}
+			}
+
+			if (isset($products['recurring_id'])) {
+				$recurring_id = $products['recurring_id'];
+			} else {
+				$recurring_id = 0;
+			}
+
+			$recurrings = $this->model_catalog_product->getProfiles($product_info['product_id']);
+
+			$this->cart->add($products['product_id'], $quantity, $option, $recurring_id);
+			}
+	}
+		
+	///////////////////////////////////////
+	
+	
+	
 	public function country() {
 		$json = array();
 
