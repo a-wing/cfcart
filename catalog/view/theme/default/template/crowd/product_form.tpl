@@ -1,4 +1,5 @@
 <?php echo $header; ?><?php echo $column_left; ?>
+<script src="catalog/view/javascript/admin-common.js" type="text/javascript"></script>
 <div id="content" class="container" >
  <ul class="breadcrumb">
      <?php foreach ($breadcrumbs as $breadcrumb) { ?>

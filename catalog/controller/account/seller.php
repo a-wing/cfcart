@@ -42,6 +42,7 @@ class ControllerAccountSeller extends Controller {
 		
 		if(isset($seller['seller_id'])) {
 			$data['sign'] = $seller['seller_id'];
+			$this->session->data['token'] = token(32);
 		} else {
 			$data['sign'] = NULL;
 		}
