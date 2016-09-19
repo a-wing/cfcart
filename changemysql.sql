@@ -19,6 +19,28 @@ CREATE TABLE `mcc_product_option_describe` (
   PRIMARY KEY (`product_id`,`option_value_id`,`language_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+
+
+
+-----------------------------------------------------------------------------
+
+
+DROP TABLE IF EXISTS `mcc_seller`;
+CREATE TABLE `mcc_seller` (
+  `seller_id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer_id` int(11) NOT NULL,
+  `sellername` varchar(32) NOT NULL,
+  PRIMARY KEY (`seller_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+
+
+
+
+
+
+
 #################################
 
 
