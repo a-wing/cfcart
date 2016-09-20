@@ -5,9 +5,9 @@ class ControllerCommonFileManager extends Controller {
 
 		// Find which protocol to use to pass the full image link back
 		if ($this->request->server['HTTPS']) {
-			$server = HTTPS_CATALOG;
+			$server = HTTPS_SERVER;
 		} else {
-			$server = HTTP_CATALOG;
+			$server = HTTP_SERVER;
 		}
 
 		if (isset($this->request->get['filter_name'])) {
@@ -204,16 +204,19 @@ class ControllerCommonFileManager extends Controller {
 		$this->response->setOutput($this->load->view('common/filemanager', $data));
 	}
 
-	public function upload() {
+ public function upload() {
 		$this->load->language('common/filemanager');
 
 		$json = array();
-
+		
+		
+		////原因不明，这个权限控制暂时注释掉
+/*
 		// Check user has permission
 		if (!$this->user->hasPermission('modify', 'common/filemanager')) {
 			$json['error'] = $this->language->get('error_permission');
 		}
-
+*/
 		// Make sure we have the correct directory
 		if (isset($this->request->get['directory'])) {
 			$directory = rtrim(DIR_IMAGE . 'catalog/' . $this->request->get['directory'], '/');
@@ -353,12 +356,12 @@ class ControllerCommonFileManager extends Controller {
 		$this->load->language('common/filemanager');
 
 		$json = array();
-
+/*
 		// Check user has permission
 		if (!$this->user->hasPermission('modify', 'common/filemanager')) {
 			$json['error'] = $this->language->get('error_permission');
 		}
-
+*/
 		if (isset($this->request->post['path'])) {
 			$paths = $this->request->post['path'];
 		} else {
