@@ -16,11 +16,13 @@ class ControllerCheckoutRegister extends Controller {
 		$data['entry_fullname'] = $this->language->get('entry_fullname');
 		$data['entry_email'] = $this->language->get('entry_email');
 		$data['entry_telephone'] = $this->language->get('entry_telephone');
+		$data['entry_shipping_telephone'] = $this->language->get('entry_shipping_telephone');
 		$data['entry_fax'] = $this->language->get('entry_fax');
 		$data['entry_company'] = $this->language->get('entry_company');
 		$data['entry_address'] = $this->language->get('entry_address');
 		$data['entry_postcode'] = $this->language->get('entry_postcode');
 		$data['entry_city'] = $this->language->get('entry_city');
+		$data['entry_district'] = $this->language->get('entry_district');
 		$data['entry_country'] = $this->language->get('entry_country');
 		$data['entry_zone'] = $this->language->get('entry_zone');
 		$data['entry_sms_code'] = $this->language->get('entry_sms_code');
@@ -28,6 +30,9 @@ class ControllerCheckoutRegister extends Controller {
 		$data['entry_password'] = $this->language->get('entry_password');
 		$data['entry_confirm'] = $this->language->get('entry_confirm');
 		$data['entry_shipping'] = $this->language->get('entry_shipping');
+		
+		$data['tab_email_register'] = $this->language->get('tab_email_register');
+		$data['tab_mobile_register'] = $this->language->get('tab_mobile_register');
 
 		$data['button_continue'] = $this->language->get('button_continue');
 		$data['button_upload'] = $this->language->get('button_upload');
@@ -66,6 +71,18 @@ class ControllerCheckoutRegister extends Controller {
 			$data['zone_id'] = '';
 		}
 		
+		if (isset($this->session->data['shipping_address']['city_id'])) {
+			$data['city_id'] = $this->session->data['shipping_address']['city_id'];
+		} else {
+			$data['city_id'] = '';
+		}
+		
+		if (isset($this->session->data['shipping_address']['district_id'])) {
+			$data['district_id'] = $this->session->data['shipping_address']['district_id'];
+		} else {
+			$data['district_id'] = '';
+		}
+		
 		//SMS
 		
 		if ($this->config->get($this->config->get('config_sms') . '_status') && in_array('register', (array)$this->config->get('config_sms_page'))) {
@@ -78,6 +95,12 @@ class ControllerCheckoutRegister extends Controller {
 			$data['sms_code'] = $this->request->post['sms_code'];
 		} else {
 			$data['sms_code'] = '';
+		}
+		
+		if (isset($this->session->data['shipping_address']['shipping_telephone'])) {
+			$data['shipping_telephone'] = $this->session->data['shipping_address']['shipping_telephone'];
+		} else {
+			$data['shipping_telephone'] = '';
 		}
 
 		$this->load->model('localisation/country');
@@ -155,33 +178,64 @@ class ControllerCheckoutRegister extends Controller {
 			if ((utf8_strlen(trim($this->request->post['fullname'])) < 1) || (utf8_strlen(trim($this->request->post['fullname'])) > 32)) {
 				$json['error']['fullname'] = $this->language->get('error_fullname');
 			}
-
-			if ((utf8_strlen($this->request->post['email']) > 96) || !filter_var($this->request->post['email'], FILTER_VALIDATE_EMAIL)) {
-				$json['error']['email'] = $this->language->get('error_email');
-			}
-
-			if ($this->model_account_customer->getTotalCustomersByEmail($this->request->post['email'])) {
-				$json['error']['warning'] = $this->language->get('error_exists');
-			}
-
-			if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
-				$json['error']['telephone'] = $this->language->get('error_telephone');
-			} else {
-				// if sms code is not correct
-				if (isset($this->request->post['sms_code'])) {
-					$this->load->model('account/smsmobile');
-					if($this->model_account_smsmobile->verifySmsCode($this->request->post['telephone'], $this->request->post['sms_code']) == 0) {
-						$json['error']['sms_code'] = $this->language->get('error_sms_code');
-					}
+			
+			if ($this->request->post['registertype'] == 'email') {
+			
+				if ((utf8_strlen($this->request->post['email']) > 96) || !filter_var($this->request->post['email'], FILTER_VALIDATE_EMAIL)) {
+					$json['error']['email'] = $this->language->get('error_email');
 				}
+	
+				if ($this->model_account_customer->getTotalCustomersByEmail($this->request->post['email'])) {
+					$json['error']['email'] = $this->language->get('error_exists');
+				}
+				
+			} else {
+				
+				if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
+					$json['error']['telephone'] = $this->language->get('error_telephone');
+				}else{
+					
+					if ($this->model_account_customer->getTotalCustomersByTelephone(trim($this->request->post['telephone']))) {
+						$json['error']['telephone'] = $this->language->get('error_telephone_exists');
+					} else {
+						// if sms code is not correct
+						if (isset($this->request->post['sms_code'])) {
+							$this->load->model('account/smsmobile');
+							if($this->model_account_smsmobile->verifySmsCode($this->request->post['telephone'], $this->request->post['sms_code']) == 0) {
+								$json['error']['sms_code'] = $this->language->get('error_sms_code');
+							}
+						}
+					
+					}
+					
+				}
+			
 			}
 
 			if ((utf8_strlen(trim($this->request->post['address'])) < 1) || (utf8_strlen(trim($this->request->post['address'])) > 128)) {
 				$json['error']['address'] = $this->language->get('error_address');
 			}
+			
+			if ($this->request->post['country_id'] == 44) {
+				
+				if (!isset($this->request->post['city_id']) || $this->request->post['city_id'] == '' || !is_numeric($this->request->post['city_id'])) {
+					$json['error']['city'] = $this->language->get('error_city');
+				}
+				
+				if (!isset($this->request->post['district_id']) || $this->request->post['district_id'] == '' || !is_numeric($this->request->post['district_id'])) {
+					$json['error']['district'] = $this->language->get('error_district');
+				}
+				
+			} else {
 
-			if ((utf8_strlen(trim($this->request->post['city'])) < 2) || (utf8_strlen(trim($this->request->post['city'])) > 128)) {
-				$json['error']['city'] = $this->language->get('error_city');
+				if ((utf8_strlen(trim($this->request->post['city'])) < 2) || (utf8_strlen(trim($this->request->post['city'])) > 128)) {
+					$json['error']['city'] = $this->language->get('error_city');
+				}
+			
+			}
+			
+			if ((utf8_strlen($this->request->post['shipping_telephone']) < 3) || (utf8_strlen($this->request->post['shipping_telephone']) > 32)) {
+				$json['error']['shipping_telephone'] = $this->language->get('error_shipping_telephone');
 			}
 
 			$this->load->model('localisation/country');
@@ -261,7 +315,12 @@ class ControllerCheckoutRegister extends Controller {
 			$customer_group_info = $this->model_account_customer_group->getCustomerGroup($customer_group_id);
 
 			if ($customer_group_info && !$customer_group_info['approval']) {
-				$this->customer->login($this->request->post['email'], $this->request->post['password']);
+				
+				if ($this->request->post['registertype'] == 'email') {
+					$this->customer->login($this->request->post['email'], $this->request->post['password']);
+				} else {
+					$this->customer->login($this->request->post['telephone'], $this->request->post['password']);
+				}
 
 				// Default Payment Address
 				$this->load->model('account/address');

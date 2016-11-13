@@ -63,6 +63,7 @@ $_['entry_customer_group']           = '會員等級';
 $_['entry_address']                  = '地址';
 $_['entry_postcode']                 = '郵政編碼';
 $_['entry_city']                     = '所在城市';
+$_['entry_district']                 = '區縣';
 $_['entry_country']                  = '國家';
 $_['entry_zone']                     = '州/省/地區';
 $_['entry_newsletter']               = '訂閱 %s 新聞郵件。';
@@ -70,8 +71,13 @@ $_['entry_shipping'] 	             = '配送地址與賬單地址壹致。';
 $_['entry_shipping_telephone'] 	     = '收件人電話';
 $_['entry_sms_code']       			 = '短信驗證碼';
 
+//Tabs
+$_['tab_email_register']       		 = '郵箱註冊';
+$_['tab_mobile_register']       	 = '手機號碼註冊';
+
 // Error
 $_['error_warning']                  = '存在問題，無法完成訂單！如果持續出現此問題，請變換付款方式或者 <a href="%s">點擊這裏</a>聯系網站管理員。';
+$_['error_telephone_exists']         = '手機號碼已經被註冊!';
 $_['error_login']                    = '警告: 用戶名或密碼錯誤。';
 $_['error_attempts']                 = '警告: 超過登錄失敗最大次數，請壹小時後再登錄。';
 $_['error_approved']                 = '警告: 登錄前需要審核通過。';
@@ -83,7 +89,8 @@ $_['error_telephone']                = '電話必須為 3 - 32字符！';
 $_['error_password']                 = '密碼必須為 4 - 20字符！';
 $_['error_confirm']                  = '確認密碼與密碼不壹致！';
 $_['error_address']                  = '地址必須為 3 - 128字符！';
-$_['error_city']                     = '所在城市必須為 2 - 128字符！';
+$_['error_city']                     = '請選擇城市或必須為 2 - 128字符！';
+$_['error_distict']                  = '請選擇區縣!';
 $_['error_postcode']                 = '郵政編碼必須為 2 - 10字符！';
 $_['error_country']                  = '請選擇國家';
 $_['error_zone']                     = '請選擇州/省/地區！';

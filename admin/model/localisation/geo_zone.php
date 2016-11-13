@@ -7,9 +7,9 @@ class ModelLocalisationGeoZone extends Model {
 
 		if (isset($data['zone_to_geo_zone'])) {
 			foreach ($data['zone_to_geo_zone'] as $value) {
-				$this->db->query("DELETE FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$geo_zone_id . "' AND country_id = '" . (int)$value['country_id'] . "' AND zone_id = '" . (int)$value['zone_id'] . "'");				
+				$this->db->query("DELETE FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$geo_zone_id . "' AND country_id = '" . (int)$value['country_id'] . "' AND zone_id = '" . (int)$value['zone_id'] . "' AND city_id = '" . (int)$value['city_id'] . "' AND district_id = '" . (int)$value['district_id'] . "'");				
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "zone_to_geo_zone SET country_id = '" . (int)$value['country_id'] . "', zone_id = '" . (int)$value['zone_id'] . "', geo_zone_id = '" . (int)$geo_zone_id . "', date_added = NOW()");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "zone_to_geo_zone SET country_id = '" . (int)$value['country_id'] . "', zone_id = '" . (int)$value['zone_id'] . "', city_id = '" . (int)$value['city_id'] . "', district_id = '" . (int)$value['district_id'] . "', geo_zone_id = '" . (int)$geo_zone_id . "', date_added = NOW()");
 			}
 		}
 
@@ -25,9 +25,9 @@ class ModelLocalisationGeoZone extends Model {
 
 		if (isset($data['zone_to_geo_zone'])) {
 			foreach ($data['zone_to_geo_zone'] as $value) {
-				$this->db->query("DELETE FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$geo_zone_id . "' AND country_id = '" . (int)$value['country_id'] . "' AND zone_id = '" . (int)$value['zone_id'] . "'");				
+				$this->db->query("DELETE FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$geo_zone_id . "' AND country_id = '" . (int)$value['country_id'] . "' AND zone_id = '" . (int)$value['zone_id'] . "' AND city_id = '" . (int)$value['city_id'] . "' AND district_id = '" . (int)$value['district_id'] . "'");				
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "zone_to_geo_zone SET country_id = '" . (int)$value['country_id'] . "', zone_id = '" . (int)$value['zone_id'] . "', geo_zone_id = '" . (int)$geo_zone_id . "', date_added = NOW()");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "zone_to_geo_zone SET country_id = '" . (int)$value['country_id'] . "', zone_id = '" . (int)$value['zone_id'] . "', city_id = '" . (int)$value['city_id'] . "', district_id = '" . (int)$value['district_id'] . "', geo_zone_id = '" . (int)$geo_zone_id . "', date_added = NOW()");
 			}
 		}
 
@@ -124,6 +124,18 @@ class ModelLocalisationGeoZone extends Model {
 
 	public function getTotalZoneToGeoZoneByZoneId($zone_id) {
 		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "zone_to_geo_zone WHERE zone_id = '" . (int)$zone_id . "'");
+
+		return $query->row['total'];
+	}
+	
+	public function getTotalCityToGeoZoneByCityId($city_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "zone_to_geo_zone WHERE city_id = '" . (int)$city_id . "'");
+
+		return $query->row['total'];
+	}
+	
+	public function getTotalDistrictToGeoZoneByDistrictId($district_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "zone_to_geo_zone WHERE district_id = '" . (int)$district_id . "'");
 
 		return $query->row['total'];
 	}

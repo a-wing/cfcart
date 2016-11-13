@@ -20,37 +20,17 @@
       <h1><?php echo $heading_title; ?></h1>
       <p><?php echo $text_account_already; ?></p>
       <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" class="form-horizontal">
-        <fieldset id="account">
-          <legend><?php echo $text_your_details; ?></legend>
-          <div class="form-group required" style="display: <?php echo (count($customer_groups) > 1 ? 'block' : 'none'); ?>;">
-            <label class="col-sm-2 control-label"><?php echo $entry_customer_group; ?></label>
-            <div class="col-sm-10">
-              <?php foreach ($customer_groups as $customer_group) { ?>
-              <?php if ($customer_group['customer_group_id'] == $customer_group_id) { ?>
-              <div class="radio">
-                <label>
-                  <input type="radio" name="customer_group_id" value="<?php echo $customer_group['customer_group_id']; ?>" checked="checked" />
-                  <?php echo $customer_group['name']; ?></label>
-              </div>
-              <?php } else { ?>
-              <div class="radio">
-                <label>
-                  <input type="radio" name="customer_group_id" value="<?php echo $customer_group['customer_group_id']; ?>" />
-                  <?php echo $customer_group['name']; ?></label>
-              </div>
-              <?php } ?>
-              <?php } ?>
-            </div>
-          </div>
-          <div class="form-group required">
-            <label class="col-sm-2 control-label" for="input-fullname"><?php echo $entry_fullname; ?></label>
-            <div class="col-sm-10">
-              <input type="text" name="fullname" value="<?php echo $fullname; ?>" placeholder="<?php echo $entry_fullname; ?>" id="input-fullname" class="form-control" />
-              <?php if ($error_fullname) { ?>
-              <div class="text-danger"><?php echo $error_fullname; ?></div>
-              <?php } ?>
-            </div>
-          </div>
+      <ul class="nav nav-tabs">
+        <li <?php if ($registertype == 'email') { ?> class="active" <?php } ?> ><a href="#tab-email" data-toggle="tab" onClick="setEmailRegister()"><?php echo $tab_email_register; ?></a>
+        <input id="email-register" class="hidden" type="radio" name="registertype" <?php if ($registertype == 'email') { ?>  checked="checked" <?php } ?>  value="email">
+        </li>
+		<li <?php if ($registertype == 'mobile') { ?> class="active" <?php } ?> ><a href="#tab-mobile" data-toggle="tab" onClick="setMobileRegister()"><?php echo $tab_mobile_register; ?></a>
+        <input id="mobile-register" class="hidden" type="radio" name="registertype" <?php if ($registertype == 'mobile') { ?>  checked="checked" <?php } ?> value="mobile">
+        </li>
+      </ul>
+      <div class="tab-content">
+      	<div class="tab-pane <?php if ($registertype == 'email') { ?> active <?php } ?> " id="tab-email">
+          
           <div class="form-group required">
             <label class="col-sm-2 control-label" for="input-email"><?php echo $entry_email; ?></label>
             <div class="col-sm-10">
@@ -60,6 +40,10 @@
               <?php } ?>
             </div>
           </div>
+
+        </div>
+        
+        <div class="tab-pane <?php if ($registertype == 'mobile') { ?> active <?php } ?> " id="tab-mobile">
           <div class="form-group required">
             <label class="col-sm-2 control-label" for="input-telephone"><?php echo $entry_telephone; ?></label>
             <div class="col-sm-10">
@@ -91,7 +75,31 @@
           </div>
           
           <?php } ?>
-          <?php foreach ($custom_fields as $custom_field) { ?>
+          
+        </div>
+        
+        <div class="form-group required" style="display: <?php echo (count($customer_groups) > 1 ? 'block' : 'none'); ?>;">
+          <label class="col-sm-2 control-label"><?php echo $entry_customer_group; ?></label>
+          <div class="col-sm-10">
+            <?php foreach ($customer_groups as $customer_group) { ?>
+            <?php if ($customer_group['customer_group_id'] == $customer_group_id) { ?>
+            <div class="radio">
+              <label>
+                <input type="radio" name="customer_group_id" value="<?php echo $customer_group['customer_group_id']; ?>" checked="checked" />
+                <?php echo $customer_group['name']; ?></label>
+            </div>
+            <?php } else { ?>
+            <div class="radio">
+              <label>
+                <input type="radio" name="customer_group_id" value="<?php echo $customer_group['customer_group_id']; ?>" />
+                <?php echo $customer_group['name']; ?></label>
+            </div>
+            <?php } ?>
+            <?php } ?>
+          </div>
+        </div>
+        
+        <?php foreach ($custom_fields as $custom_field) { ?>
           <?php if ($custom_field['location'] == 'account') { ?>
           <?php if ($custom_field['type'] == 'select') { ?>
           <div id="custom-field<?php echo $custom_field['custom_field_id']; ?>" class="form-group custom-field" data-sort="<?php echo $custom_field['sort_order']; ?>">
@@ -244,10 +252,7 @@
           <?php } ?>
           <?php } ?>
           <?php } ?>
-        </fieldset>
-        
-        <fieldset>
-          <legend><?php echo $text_your_password; ?></legend>
+          
           <div class="form-group required">
             <label class="col-sm-2 control-label" for="input-password"><?php echo $entry_password; ?></label>
             <div class="col-sm-10">
@@ -266,38 +271,42 @@
               <?php } ?>
             </div>
           </div>
-        </fieldset>
-        <fieldset>
-          <legend><?php echo $text_newsletter; ?></legend>
-          <div class="form-group">
-            <label class="col-sm-2 control-label"><?php echo $entry_newsletter; ?></label>
-            <div class="col-sm-10">
-              <?php if ($newsletter) { ?>
-              <label class="radio-inline">
-                <input type="radio" name="newsletter" value="1" checked="checked" />
-                <?php echo $text_yes; ?></label>
-              <label class="radio-inline">
-                <input type="radio" name="newsletter" value="0" />
-                <?php echo $text_no; ?></label>
-              <?php } else { ?>
-              <label class="radio-inline">
-                <input type="radio" name="newsletter" value="1" />
-                <?php echo $text_yes; ?></label>
-              <label class="radio-inline">
-                <input type="radio" name="newsletter" value="0" checked="checked" />
-                <?php echo $text_no; ?></label>
-              <?php } ?>
+          
+          <?php echo $captcha; ?>
+          
+          <fieldset>
+            <legend><?php echo $text_newsletter; ?></legend>
+            <div class="form-group">
+              <label class="col-sm-2 control-label"><?php echo $entry_newsletter; ?></label>
+              <div class="col-sm-10">
+                <?php if ($newsletter) { ?>
+                <label class="radio-inline">
+                  <input type="radio" name="newsletter" value="1" checked="checked" />
+                  <?php echo $text_yes; ?></label>
+                <label class="radio-inline">
+                  <input type="radio" name="newsletter" value="0" />
+                  <?php echo $text_no; ?></label>
+                <?php } else { ?>
+                <label class="radio-inline">
+                  <input type="radio" name="newsletter" value="1" />
+                  <?php echo $text_yes; ?></label>
+                <label class="radio-inline">
+                  <input type="radio" name="newsletter" value="0" checked="checked" />
+                  <?php echo $text_no; ?></label>
+                <?php } ?>
+              </div>
             </div>
-          </div>
-        </fieldset>
-        <?php echo $captcha; ?>
-        <?php if ($text_agree) { ?>
+          </fieldset>
+          
+      </div>
+      
+      <?php if ($text_agree) { ?>
         <div class="buttons">
           <div class="pull-right"><?php echo $text_agree; ?>
             <?php if ($agree) { ?>
             <input type="checkbox" name="agree" value="1" checked="checked" />
             <?php } else { ?>
-            <input type="checkbox" name="agree" value="1" />
+            <input type="checkbox" name="agree" value="1" checked="checked" />
             <?php } ?>
             &nbsp;
             <input type="submit" value="<?php echo $button_continue; ?>" class="btn btn-primary" />
@@ -314,6 +323,18 @@
       <?php echo $content_bottom; ?></div>
     <?php echo $column_right; ?></div>
 </div>
+<script type="text/javascript"><!--
+
+function setEmailRegister() {
+	$('input:radio[name=registertype][value=email]').click();
+}
+
+function setMobileRegister() {
+	$('input:radio[name=registertype][value=mobile]').click();
+}
+
+//--></script>
+
 <script type="text/javascript"><!--
 // Sort the custom fields
 $('#account .form-group[data-sort]').detach().each(function() {

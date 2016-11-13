@@ -137,9 +137,13 @@ class ControllerCheckoutConfirm extends Controller {
 			}
 
 			$order_data['payment_fullname'] = $this->session->data['payment_address']['fullname'];
+			$order_data['payment_telephone'] = $this->session->data['payment_address']['shipping_telephone'];
 			$order_data['payment_company'] = $this->session->data['payment_address']['company'];
 			$order_data['payment_address'] = $this->session->data['payment_address']['address'];
 			$order_data['payment_city'] = $this->session->data['payment_address']['city'];
+			$order_data['payment_city_id'] = $this->session->data['payment_address']['city_id'];
+			$order_data['payment_district'] = $this->session->data['payment_address']['district'];
+			$order_data['payment_district_id'] = $this->session->data['payment_address']['district_id'];
 			$order_data['payment_postcode'] = $this->session->data['payment_address']['postcode'];
 			$order_data['payment_zone'] = $this->session->data['payment_address']['zone'];
 			$order_data['payment_zone_id'] = $this->session->data['payment_address']['zone_id'];
@@ -166,6 +170,9 @@ class ControllerCheckoutConfirm extends Controller {
 				$order_data['shipping_company'] = $this->session->data['shipping_address']['company'];
 				$order_data['shipping_address'] = $this->session->data['shipping_address']['address'];
 				$order_data['shipping_city'] = $this->session->data['shipping_address']['city'];
+				$order_data['shipping_city_id'] = $this->session->data['shipping_address']['city_id'];
+				$order_data['shipping_district'] = $this->session->data['shipping_address']['district'];
+				$order_data['shipping_district_id'] = $this->session->data['shipping_address']['district_id'];
 				$order_data['shipping_postcode'] = $this->session->data['shipping_address']['postcode'];
 				$order_data['shipping_zone'] = $this->session->data['shipping_address']['zone'];
 				$order_data['shipping_zone_id'] = $this->session->data['shipping_address']['zone_id'];
@@ -190,6 +197,9 @@ class ControllerCheckoutConfirm extends Controller {
 				$order_data['shipping_company'] = '';
 				$order_data['shipping_address'] = '';
 				$order_data['shipping_city'] = '';
+				$order_data['shipping_city_id'] = '';
+				$order_data['shipping_district'] = '';
+				$order_data['shipping_district_id'] = '';
 				$order_data['shipping_postcode'] = '';
 				$order_data['shipping_telephone'] = '';
 				$order_data['shipping_zone'] = '';

@@ -403,18 +403,18 @@ class ControllerLocalisationDistrict extends Controller {
 		if (!$this->user->hasPermission('modify', 'localisation/district')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
-
+		
 		$this->load->model('setting/store');
 		$this->load->model('customer/customer');
 		$this->load->model('marketing/affiliate');
-		//$this->load->model('localisation/geo_district');
+		$this->load->model('localisation/geo_zone');
 		
-		/*
-		foreach ($this->request->post['selected'] as $district_id) {
+		
+		foreach ($this->request->post['selected'] as $city_id) {
 			if ($this->config->get('config_district_id') == $district_id) {
 				$this->error['warning'] = $this->language->get('error_default');
 			}
-
+			
 			$store_total = $this->model_setting_store->getTotalStoresByDistrictId($district_id);
 
 			if ($store_total) {
@@ -433,13 +433,12 @@ class ControllerLocalisationDistrict extends Controller {
 				$this->error['warning'] = sprintf($this->language->get('error_affiliate'), $affiliate_total);
 			}
 
-			$district_to_geo_district_total = $this->model_localisation_geo_district->getTotalDistrictToGeoDistrictByDistrictId($district_id);
+			$district_to_geo_zone_total = $this->model_localisation_geo_zone->getTotalDistrictToGeoZoneByDistrictId($district_id);
 
-			if ($district_to_geo_district_total) {
-				$this->error['warning'] = sprintf($this->language->get('error_district_to_geo_district'), $district_to_geo_district_total);
+			if ($district_to_geo_zone_total) {
+				$this->error['warning'] = sprintf($this->language->get('error_district_to_geo_zone'), $district_to_geo_zone_total);
 			}
 		}
-		*/
 
 		return !$this->error;
 	}

@@ -7,7 +7,7 @@ class ModelCustomerCustomer extends Model {
 
 		if (isset($data['address'])) {
 			foreach ($data['address'] as $address) {
-				$this->db->query("INSERT INTO " . DB_PREFIX . "address SET customer_id = '" . (int)$customer_id . "', fullname = '" . $this->db->escape($address['fullname']) . "', shipping_telephone = '" . $this->db->escape($address['shipping_telephone']) . "', company = '" . $this->db->escape($address['company']) . "', address = '" . $this->db->escape($address['address']) . "', city = '" . $this->db->escape($address['city']) . "', postcode = '" . $this->db->escape($address['postcode']) . "', country_id = '" . (int)$address['country_id'] . "', zone_id = '" . (int)$address['zone_id'] . "', custom_field = '" . $this->db->escape(isset($address['custom_field']) ? json_encode($address['custom_field']) : '') . "'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "address SET customer_id = '" . (int)$customer_id . "', fullname = '" . $this->db->escape($address['fullname']) . "', shipping_telephone = '" . $this->db->escape($address['shipping_telephone']) . "', company = '" . $this->db->escape($address['company']) . "', address = '" . $this->db->escape($address['address']) . "', city = '" . $this->db->escape($address['city']) . "', city_id = '" . (int)$address['city_id'] . "', district_id = '" . (int)$address['district_id'] . "', postcode = '" . $this->db->escape($address['postcode']) . "', country_id = '" . (int)$address['country_id'] . "', zone_id = '" . (int)$address['zone_id'] . "', custom_field = '" . $this->db->escape(isset($address['custom_field']) ? json_encode($address['custom_field']) : '') . "'");
 
 				if (isset($address['default'])) {
 					$address_id = $this->db->getLastId();
@@ -39,7 +39,7 @@ class ModelCustomerCustomer extends Model {
 					$address['custom_field'] = array();
 				}
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "address SET address_id = '" . (int)$address['address_id'] . "', customer_id = '" . (int)$customer_id . "', fullname = '" . $this->db->escape($address['fullname']) . "', shipping_telephone = '" . $this->db->escape($address['shipping_telephone']) . "', company = '" . $this->db->escape($address['company']) . "', address = '" . $this->db->escape($address['address']) . "', city = '" . $this->db->escape($address['city']) . "', postcode = '" . $this->db->escape($address['postcode']) . "', country_id = '" . (int)$address['country_id'] . "', zone_id = '" . (int)$address['zone_id'] . "', custom_field = '" . $this->db->escape(isset($address['custom_field']) ? json_encode($address['custom_field']) : '') . "'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "address SET address_id = '" . (int)$address['address_id'] . "', customer_id = '" . (int)$customer_id . "', fullname = '" . $this->db->escape($address['fullname']) . "', shipping_telephone = '" . $this->db->escape($address['shipping_telephone']) . "', company = '" . $this->db->escape($address['company']) . "', address = '" . $this->db->escape($address['address']) . "', city = '" . $this->db->escape($address['city']) . "', city_id = '" . (int)$address['city_id'] . "', district_id = '" . (int)$address['district_id'] . "', postcode = '" . $this->db->escape($address['postcode']) . "', country_id = '" . (int)$address['country_id'] . "', zone_id = '" . (int)$address['zone_id'] . "', custom_field = '" . $this->db->escape(isset($address['custom_field']) ? json_encode($address['custom_field']) : '') . "'");
 
 				if (isset($address['default'])) {
 					$address_id = $this->db->getLastId();
@@ -193,22 +193,24 @@ class ModelCustomerCustomer extends Model {
 			$message .= $language->get('text_approve_services') . "\n\n";
 			$message .= $language->get('text_approve_thanks') . "\n";
 			$message .= html_entity_decode($store_name, ENT_QUOTES, 'UTF-8');
-
-			$mail = new Mail();
-			$mail->protocol = $this->config->get('config_mail_protocol');
-			$mail->parameter = $this->config->get('config_mail_parameter');
-			$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
-			$mail->smtp_username = $this->config->get('config_mail_smtp_username');
-			$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
-			$mail->smtp_port = $this->config->get('config_mail_smtp_port');
-			$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
-
-			$mail->setTo($customer_info['email']);
-			$mail->setFrom($this->config->get('config_email'));
-			$mail->setSender(html_entity_decode($store_name, ENT_QUOTES, 'UTF-8'));
-			$mail->setSubject(sprintf($language->get('text_approve_subject'), html_entity_decode($store_name, ENT_QUOTES, 'UTF-8')));
-			$mail->setText($message);
-			$mail->send();
+			
+			if (filter_var($customer_info['email'], FILTER_VALIDATE_EMAIL)) {
+				$mail = new Mail();
+				$mail->protocol = $this->config->get('config_mail_protocol');
+				$mail->parameter = $this->config->get('config_mail_parameter');
+				$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
+				$mail->smtp_username = $this->config->get('config_mail_smtp_username');
+				$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
+				$mail->smtp_port = $this->config->get('config_mail_smtp_port');
+				$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
+	
+				$mail->setTo($customer_info['email']);
+				$mail->setFrom($this->config->get('config_email'));
+				$mail->setSender(html_entity_decode($store_name, ENT_QUOTES, 'UTF-8'));
+				$mail->setSubject(sprintf($language->get('text_approve_subject'), html_entity_decode($store_name, ENT_QUOTES, 'UTF-8')));
+				$mail->setText($message);
+				$mail->send();
+			}
 		}
 	}
 
@@ -239,16 +241,40 @@ class ModelCustomerCustomer extends Model {
 				$zone = '';
 				$zone_code = '';
 			}
+			
+			if ($address_query->row['country_id'] == 44) {
+				$city_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "city` WHERE city_id = '" . (int)$address_query->row['city_id'] . "'");
+	
+				if ($city_query->num_rows) {
+					$city = $city_query->row['name'];
+				} else {
+					$city = '';
+				}
+			} else {
+				$city = $address_query->row['city'];
+			}
+			
+			$district_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "district` WHERE district_id = '" . (int)$address_query->row['district_id'] . "'");
+
+			if ($district_query->num_rows) {
+				$district = $district_query->row['name'];
+			} else {
+				$district = '';
+			}
 
 			return array(
 				'address_id'     => $address_query->row['address_id'],
 				'customer_id'    => $address_query->row['customer_id'],
 				'fullname'      => $address_query->row['fullname'],
 				'shipping_telephone'      => $address_query->row['shipping_telephone'],
+				'payment_telephone'      => $address_query->row['shipping_telephone'],
 				'company'        => $address_query->row['company'],
 				'address'      => $address_query->row['address'],
 				'postcode'       => $address_query->row['postcode'],
-				'city'           => $address_query->row['city'],
+				'city'           => $city,
+				'city_id'        => $address_query->row['city_id'],
+				'district'    	 => $district,
+				'district_id'    => $address_query->row['district_id'],
 				'zone_id'        => $address_query->row['zone_id'],
 				'zone'           => $zone,
 				'zone_code'      => $zone_code,
@@ -347,6 +373,18 @@ class ModelCustomerCustomer extends Model {
 
 		return $query->row['total'];
 	}
+	
+	public function getTotalAddressesByCityId($city_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "address WHERE city_id = '" . (int)$city_id . "'");
+
+		return $query->row['total'];
+	}
+	
+	public function getTotalAddressesByDistrictId($district_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "address WHERE district_id = '" . (int)$district_id . "'");
+
+		return $query->row['total'];
+	}
 
 	public function getTotalCustomersByCustomerGroupId($customer_group_id) {
 		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "customer WHERE customer_group_id = '" . (int)$customer_group_id . "'");
@@ -398,22 +436,24 @@ class ModelCustomerCustomer extends Model {
 
 			$message  = sprintf($this->language->get('text_transaction_received'), $this->currency->format($amount, $this->config->get('config_currency'))) . "\n\n";
 			$message .= sprintf($this->language->get('text_transaction_total'), $this->currency->format($this->getTransactionTotal($customer_id), $this->session->data['currency']));
-
-			$mail = new Mail();
-			$mail->protocol = $this->config->get('config_mail_protocol');
-			$mail->parameter = $this->config->get('config_mail_parameter');
-			$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
-			$mail->smtp_username = $this->config->get('config_mail_smtp_username');
-			$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
-			$mail->smtp_port = $this->config->get('config_mail_smtp_port');
-			$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
-
-			$mail->setTo($customer_info['email']);
-			$mail->setFrom($this->config->get('config_email'));
-			$mail->setSender(html_entity_decode($store_name, ENT_QUOTES, 'UTF-8'));
-			$mail->setSubject(sprintf($this->language->get('text_transaction_subject'), html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8')));
-			$mail->setText($message);
-			$mail->send();
+			
+			if (filter_var($customer_info['email'], FILTER_VALIDATE_EMAIL)) {
+				$mail = new Mail();
+				$mail->protocol = $this->config->get('config_mail_protocol');
+				$mail->parameter = $this->config->get('config_mail_parameter');
+				$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
+				$mail->smtp_username = $this->config->get('config_mail_smtp_username');
+				$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
+				$mail->smtp_port = $this->config->get('config_mail_smtp_port');
+				$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
+	
+				$mail->setTo($customer_info['email']);
+				$mail->setFrom($this->config->get('config_email'));
+				$mail->setSender(html_entity_decode($store_name, ENT_QUOTES, 'UTF-8'));
+				$mail->setSubject(sprintf($this->language->get('text_transaction_subject'), html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8')));
+				$mail->setText($message);
+				$mail->send();
+			}
 		}
 	}
 
@@ -473,22 +513,24 @@ class ModelCustomerCustomer extends Model {
 
 			$message  = sprintf($this->language->get('text_reward_received'), $points) . "\n\n";
 			$message .= sprintf($this->language->get('text_reward_total'), $this->getRewardTotal($customer_id));
-
-			$mail = new Mail();
-			$mail->protocol = $this->config->get('config_mail_protocol');
-			$mail->parameter = $this->config->get('config_mail_parameter');
-			$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
-			$mail->smtp_username = $this->config->get('config_mail_smtp_username');
-			$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
-			$mail->smtp_port = $this->config->get('config_mail_smtp_port');
-			$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
-
-			$mail->setTo($customer_info['email']);
-			$mail->setFrom($this->config->get('config_email'));
-			$mail->setSender(html_entity_decode($store_name, ENT_QUOTES, 'UTF-8'));
-			$mail->setSubject(sprintf($this->language->get('text_reward_subject'), html_entity_decode($store_name, ENT_QUOTES, 'UTF-8')));
-			$mail->setText($message);
-			$mail->send();
+			
+			if (filter_var($customer_info['email'], FILTER_VALIDATE_EMAIL)) {
+				$mail = new Mail();
+				$mail->protocol = $this->config->get('config_mail_protocol');
+				$mail->parameter = $this->config->get('config_mail_parameter');
+				$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
+				$mail->smtp_username = $this->config->get('config_mail_smtp_username');
+				$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
+				$mail->smtp_port = $this->config->get('config_mail_smtp_port');
+				$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
+	
+				$mail->setTo($customer_info['email']);
+				$mail->setFrom($this->config->get('config_email'));
+				$mail->setSender(html_entity_decode($store_name, ENT_QUOTES, 'UTF-8'));
+				$mail->setSubject(sprintf($this->language->get('text_reward_subject'), html_entity_decode($store_name, ENT_QUOTES, 'UTF-8')));
+				$mail->setText($message);
+				$mail->send();
+			}
 		}
 	}
 

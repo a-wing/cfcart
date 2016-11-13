@@ -69,13 +69,39 @@ class ControllerExtensionModuleFeatured extends Controller {
 					///////////////////////////////////////////
 					//crowdfunding progress
 					//////////////////////////////////////////
-					$fundingtotal = $this->model_catalog_product->getPurchasedProductTotal($product_info['name']);
+
+					//$product_info = $this->model_catalog_product->getProduct($product_id);
+					//echo $product_info['name'];
 					
+					$filter_data = array(
+						'filter_date_start'	     => NULL,
+						'filter_date_end'	     => NULL,
+						'filter_order_status_id' => 5,
+						'start'                  => NULL,
+						'limit'                  => NULL
+					);
+					$results = $this->model_catalog_product->getPurchased($filter_data);
+					//var_dump($results);
+					//echo "<br>";
+					$fundingtotal = 0;
+					foreach ($results as $result) {
+						
+						if($product_info['name'] == $result['name']){
+			//echo "ABCD";
+			//$fundingtotal = $this->currency->format($result['total'], $this->config->get('config_currency'));
+							$fundingtotal = $result['total'];
+						}
+					}
+					//var_dump($fundingtotal);
 					///////////////////////////////////////////
 					//date-end
 					//////////////////////////////////////////
+					//echo $showtime=date("Y-m-d");
+					//$startdate=strtotime(date("Y-m-d"));
+					//$enddate=strtotime($product_info['date_end']);
 					$days=round((strtotime($product_info['date_undercarriage'])-strtotime(date("Y-m-d")))/86400)+1;
-
+					//echo $days;
+					//echo "<br/>";
 					//////////////////////////////////////////
 
 

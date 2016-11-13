@@ -392,18 +392,18 @@ class ControllerLocalisationCity extends Controller {
 		if (!$this->user->hasPermission('modify', 'localisation/city')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
-
+		
 		$this->load->model('setting/store');
 		$this->load->model('customer/customer');
 		$this->load->model('marketing/affiliate');
-		//$this->load->model('localisation/geo_city');
+		$this->load->model('localisation/geo_zone');
 		
-		/*
+		
 		foreach ($this->request->post['selected'] as $city_id) {
 			if ($this->config->get('config_city_id') == $city_id) {
 				$this->error['warning'] = $this->language->get('error_default');
 			}
-
+			
 			$store_total = $this->model_setting_store->getTotalStoresByCityId($city_id);
 
 			if ($store_total) {
@@ -422,14 +422,36 @@ class ControllerLocalisationCity extends Controller {
 				$this->error['warning'] = sprintf($this->language->get('error_affiliate'), $affiliate_total);
 			}
 
-			$city_to_geo_city_total = $this->model_localisation_geo_city->getTotalCityToGeoCityByCityId($city_id);
+			$city_to_geo_zone_total = $this->model_localisation_geo_zone->getTotalCityToGeoZoneByCityId($city_id);
 
-			if ($city_to_geo_city_total) {
-				$this->error['warning'] = sprintf($this->language->get('error_city_to_geo_city'), $city_to_geo_city_total);
+			if ($city_to_geo_zone_total) {
+				$this->error['warning'] = sprintf($this->language->get('error_city_to_geo_zone'), $city_to_geo_zone_total);
 			}
 		}
-		*/
+		
 
 		return !$this->error;
 	}
+	
+	public function city() {
+		$json = array();
+
+		$this->load->model('localisation/city');
+
+		$city_info = $this->model_localisation_city->getCity($this->request->get['city_id']);
+
+		if ($city_info) {
+			$this->load->model('localisation/district');
+
+			$json = array(
+				'city_id'        	=> $city_info['zone_id'],
+				'name'              => $city_info['name'],
+				'district'              => $this->model_localisation_district->getDistrictsByCityId($this->request->get['city_id']),
+				'status'            => $city_info['status']
+			);
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}	
 }

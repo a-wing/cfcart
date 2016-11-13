@@ -212,7 +212,7 @@ class ControllerAccountAddress extends Controller {
 			if ($result['address_format']) {
 				$format = $result['address_format'];
 			} else {
-				$format = '{fullname}' . "\n" . '{company}' . "\n" . '{country}' . '{zone}' . '{city}' . '{address}' . "\n" .   '{postcode}' . "\n" .   '{shipping_telephone}';
+				$format = '{fullname}' . "\n" . '{company}' . "\n" . '{country}' . '{zone}' . '{city}' . '{district}' . '{address}' . "\n" .   '{postcode}' . "\n" .   '{shipping_telephone}';
 			}
 
 			$find = array(
@@ -221,6 +221,7 @@ class ControllerAccountAddress extends Controller {
 				'{country}',
 				'{zone}',
 				'{city}',
+				'{district}',
 				'{address}',
 				'{postcode}',
 				'{shipping_telephone}',
@@ -232,6 +233,7 @@ class ControllerAccountAddress extends Controller {
 				'country'   => $result['country'],
 				'zone'      => $result['zone'],
 				'city'      => $result['city'],
+				'district'      => $result['district'],
 				'address' => $result['address'],
 				'postcode' => $result['postcode'],
 				'shipping_telephone' => $result['shipping_telephone'],
@@ -304,6 +306,7 @@ class ControllerAccountAddress extends Controller {
 		$data['entry_city'] = $this->language->get('entry_city');
 		$data['entry_country'] = $this->language->get('entry_country');
 		$data['entry_zone'] = $this->language->get('entry_zone');
+		$data['entry_district'] = $this->language->get('entry_district');
 		$data['entry_default'] = $this->language->get('entry_default');
 		$data['entry_shipping_telephone'] = $this->language->get('entry_shipping_telephone');
 
@@ -333,6 +336,12 @@ class ControllerAccountAddress extends Controller {
 			$data['error_city'] = $this->error['city'];
 		} else {
 			$data['error_city'] = '';
+		}
+		
+		if (isset($this->error['district'])) {
+			$data['error_district'] = $this->error['district'];
+		} else {
+			$data['error_district'] = '';
 		}
 
 		if (isset($this->error['postcode'])) {
@@ -410,11 +419,27 @@ class ControllerAccountAddress extends Controller {
 		}
 
 		if (isset($this->request->post['city'])) {
-			$data['city'] = $this->request->post['city'];
-		} elseif (!empty($address_info)) {
+			$data['city'] = (int)$this->request->post['city'];
+		}  elseif (!empty($address_info)) {
 			$data['city'] = $address_info['city'];
 		} else {
 			$data['city'] = '';
+		}
+		
+		if (isset($this->request->post['city_id'])) {
+			$data['city_id'] = (int)$this->request->post['city_id'];
+		}  elseif (!empty($address_info)) {
+			$data['city_id'] = $address_info['city_id'];
+		} else {
+			$data['city_id'] = '';
+		}
+		
+		if (isset($this->request->post['district_id'])) {
+			$data['district_id'] = (int)$this->request->post['district_id'];
+		}  elseif (!empty($address_info)) {
+			$data['district_id'] = $address_info['district_id'];
+		} else {
+			$data['district_id'] = '';
 		}
 
 		if (isset($this->request->post['country_id'])) {
@@ -483,11 +508,7 @@ class ControllerAccountAddress extends Controller {
 		if ((utf8_strlen(trim($this->request->post['address'])) < 1) || (utf8_strlen(trim($this->request->post['address'])) > 128)) {
 			$this->error['address'] = $this->language->get('error_address');
 		}
-
-		if ((utf8_strlen(trim($this->request->post['city'])) < 2) || (utf8_strlen(trim($this->request->post['city'])) > 128)) {
-			$this->error['city'] = $this->language->get('error_city');
-		}
-
+		
 		$this->load->model('localisation/country');
 
 		$country_info = $this->model_localisation_country->getCountry($this->request->post['country_id']);
@@ -503,6 +524,23 @@ class ControllerAccountAddress extends Controller {
 		if (!isset($this->request->post['zone_id']) || $this->request->post['zone_id'] == '' || !is_numeric($this->request->post['zone_id'])) {
 			$this->error['zone'] = $this->language->get('error_zone');
 		}
+		
+		if ($this->request->post['country_id'] == 44) {
+			if (!isset($this->request->post['city_id']) || $this->request->post['city_id'] == '' || !is_numeric($this->request->post['city_id'])) {
+				$this->error['city'] = $this->language->get('error_city');
+			}
+			
+			if (!isset($this->request->post['district_id']) || $this->request->post['district_id'] == '' || !is_numeric($this->request->post['district_id'])) {
+				$this->error['district'] = $this->language->get('error_district');
+			}
+		
+		} else {
+			if ((utf8_strlen(trim($this->request->post['city'])) < 2) || (utf8_strlen(trim($this->request->post['city'])) > 128)) {
+				$this->error['city'] = $this->language->get('error_city');
+			}
+		}
+		
+		
 
 		// Custom field validation
 		$this->load->model('account/custom_field');

@@ -14,7 +14,7 @@ class ControllerStartupUpgrade extends Controller {
 		}
 		
 		if ($upgrade) {
-			echo "You have installed MyCnCart!";
+			$this->response->redirect($this->url->link('upgrade/upgrade'));
 		}
 	}
 }

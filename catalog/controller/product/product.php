@@ -154,13 +154,39 @@ class ControllerProductProduct extends Controller {
 			$product_id = 0;
 		}
 		///////////////////////////////////////////
-		// crowdfunding progress
+		//crowdfunding progress
 		//////////////////////////////////////////
+		//$this->load->model('module/funding');
 		$this->load->model('catalog/product');
 		
 		$product_info = $this->model_catalog_product->getProduct($product_id);
+		//echo $product_info['name'];
 
-		$fundingtotal = $this->model_catalog_product->getPurchasedProductTotal($product_info['name']);
+		$filter_data = array(
+			'filter_date_start'	     => NULL,
+			'filter_date_end'	     => NULL,
+			'filter_order_status_id' => 5,
+			'start'                  => NULL,
+			'limit'                  => NULL
+		);
+		//var_dump($filter_data);
+		//$product_total = $this->model_report_product->getTotalPurchased($filter_data);
+		//var_dump($product_total);
+		$results = $this->model_catalog_product->getPurchased($filter_data);
+		//var_dump($results);
+		foreach ($results as $result) {
+			if($product_info['name'] == $result['name']){
+			//echo "ABCD";
+			//$fundingtotal = $this->currency->format($result['total'], $this->config->get('config_currency'));
+			$fundingtotal = floatval($result['total']);
+			}
+		}
+		//////////////////////////////////////////
+		//$this->load->model('catalog/product');
+
+		//$product_info = $this->model_catalog_product->getProduct($product_id);
+		
+		
 		//////////////////////////////////////////
 		// order person _supporter
 		/////////////////////////////////////////
