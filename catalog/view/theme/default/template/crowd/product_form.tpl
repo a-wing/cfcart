@@ -863,7 +863,6 @@
             </div>
             <div class="tab-pane" id="tab-image">
               <div class="table-responsive">
-			  <h1>暂时不支持上传图像，上传图像请联系管理员</h1>
                 <table class="table table-striped table-bordered table-hover">
                   <thead>
                     <tr>

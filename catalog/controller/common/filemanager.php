@@ -15,13 +15,32 @@ class ControllerCommonFileManager extends Controller {
 		} else {
 			$filter_name = null;
 		}
+		
+		// add seller add images
+		// 销售者添加图片
+		
+		$this->load->model('account/seller');
+		$seller = $this->model_account_seller->checkoutSeller($this->customer->getId());
+
+		if(isset($seller['seller_id'])) {
+			$seller_images = DIR_IMAGE . 'catalog/seller/' . $seller['seller_id'] . '/';
+			$dirname = $seller_images . 'catalog/';
+			if(!is_dir($dirname)) {
+				mkdir($dirname, 0777, true);
+			}
+			echo $seller['seller_id'];
+		} else {
+			$data['sign'] = NULL;
+		}
+		
+		
 
 		// Make sure we have the correct directory
 		if (isset($this->request->get['directory'])) {
-			$directory = rtrim(DIR_IMAGE . 'catalog/' . str_replace('*', '', $this->request->get['directory']), '/');
+			$directory = rtrim($seller_images . 'catalog/' . str_replace('*', '', $this->request->get['directory']), '/');
 			setcookie('imagemanager_last_open_folder', $this->request->get['directory'], time() + 60 * 60 * 24 * 30 * 24, '/', $this->request->server['HTTP_HOST']);
 		} else {
-			$directory = DIR_IMAGE . 'catalog';
+			$directory = $seller_images . 'catalog';
 		}
 
 		if (isset($this->request->get['page'])) {
@@ -37,7 +56,7 @@ class ControllerCommonFileManager extends Controller {
 
 		$this->load->model('tool/image');
 
-		if (substr(str_replace('\\', '/', realpath($directory . '/' . $filter_name)), 0, strlen(DIR_IMAGE . 'catalog')) == DIR_IMAGE . 'catalog') {
+		if (substr(str_replace('\\', '/', realpath($directory . '/' . $filter_name)), 0, strlen($seller_images . 'catalog')) == $seller_images . 'catalog') {
 			// Get directories
 			$directories = glob($directory . '/' . $filter_name . '*', GLOB_ONLYDIR);
 
@@ -80,8 +99,8 @@ class ControllerCommonFileManager extends Controller {
 					'thumb' => '',
 					'name'  => implode(' ', $name),
 					'type'  => 'directory',
-					'path'  => utf8_substr($image, utf8_strlen(DIR_IMAGE)),
-					'href'  => $this->url->link('common/filemanager', 'token=' . $this->session->data['token'] . '&directory=' . urlencode(utf8_substr($image, utf8_strlen(DIR_IMAGE . 'catalog/'))) . $url, true)
+					'path'  => utf8_substr($image, utf8_strlen($seller_images)),
+					'href'  => $this->url->link('common/filemanager', 'token=' . $this->session->data['token'] . '&directory=' . urlencode(utf8_substr($image, utf8_strlen($seller_images . 'catalog/'))) . $url, true)
 				);
 			} elseif (is_file($image)) {
 				$data['images'][] = array(
@@ -217,15 +236,19 @@ class ControllerCommonFileManager extends Controller {
 			$json['error'] = $this->language->get('error_permission');
 		}
 */
+		$this->load->model('account/seller');
+		$seller = $this->model_account_seller->checkoutSeller($this->customer->getId());
+		$seller_images = DIR_IMAGE . 'catalog/seller/' . $seller['seller_id'] . '/';
+		
 		// Make sure we have the correct directory
 		if (isset($this->request->get['directory'])) {
-			$directory = rtrim(DIR_IMAGE . 'catalog/' . $this->request->get['directory'], '/');
+			$directory = rtrim($seller_images . 'catalog/' . $this->request->get['directory'], '/');
 		} else {
-			$directory = DIR_IMAGE . 'catalog';
+			$directory = $seller_images . 'catalog';
 		}
 
 		// Check its a directory
-		if (!is_dir($directory) || substr(str_replace('\\', '/', realpath($directory)), 0, strlen(DIR_IMAGE . 'catalog')) != DIR_IMAGE . 'catalog') {
+		if (!is_dir($directory) || substr(str_replace('\\', '/', realpath($directory)), 0, strlen($seller_images . 'catalog')) != $seller_images . 'catalog') {
 			$json['error'] = $this->language->get('error_directory');
 		}
 
@@ -306,21 +329,25 @@ class ControllerCommonFileManager extends Controller {
 		$this->load->language('common/filemanager');
 
 		$json = array();
-
+/*
 		// Check user has permission
 		if (!$this->user->hasPermission('modify', 'common/filemanager')) {
 			$json['error'] = $this->language->get('error_permission');
 		}
+*/
+		$this->load->model('account/seller');
+		$seller = $this->model_account_seller->checkoutSeller($this->customer->getId());
+		$seller_images = DIR_IMAGE . 'catalog/seller/' . $seller['seller_id'] . '/';
 
 		// Make sure we have the correct directory
 		if (isset($this->request->get['directory'])) {
-			$directory = rtrim(DIR_IMAGE . 'catalog/' . $this->request->get['directory'], '/');
+			$directory = rtrim($seller_images . 'catalog/' . $this->request->get['directory'], '/');
 		} else {
-			$directory = DIR_IMAGE . 'catalog';
+			$directory = $seller_images . 'catalog';
 		}
 
 		// Check its a directory
-		if (!is_dir($directory) || substr(str_replace('\\', '/', realpath($directory)), 0, strlen(DIR_IMAGE . 'catalog')) != DIR_IMAGE . 'catalog') {
+		if (!is_dir($directory) || substr(str_replace('\\', '/', realpath($directory)), 0, strlen($seller_images . 'catalog')) != $seller_images . 'catalog') {
 			$json['error'] = $this->language->get('error_directory');
 		}
 
@@ -362,6 +389,10 @@ class ControllerCommonFileManager extends Controller {
 			$json['error'] = $this->language->get('error_permission');
 		}
 */
+		$this->load->model('account/seller');
+		$seller = $this->model_account_seller->checkoutSeller($this->customer->getId());
+		$seller_images = DIR_IMAGE . 'catalog/seller/' . $seller['seller_id'] . '/';
+		
 		if (isset($this->request->post['path'])) {
 			$paths = $this->request->post['path'];
 		} else {
@@ -371,7 +402,7 @@ class ControllerCommonFileManager extends Controller {
 		// Loop through each path to run validations
 		foreach ($paths as $path) {
 			// Check path exsists
-			if ($path == DIR_IMAGE . 'catalog' || substr(str_replace('\\', '/', realpath(DIR_IMAGE . $path)), 0, strlen(DIR_IMAGE . 'catalog')) != DIR_IMAGE . 'catalog') {
+			if ($path == $seller_images . 'catalog' || substr(str_replace('\\', '/', realpath($seller_images . $path)), 0, strlen($seller_images . 'catalog')) != $seller_images . 'catalog') {
 				$json['error'] = $this->language->get('error_delete');
 
 				break;
@@ -381,7 +412,7 @@ class ControllerCommonFileManager extends Controller {
 		if (!$json) {
 			// Loop through each path
 			foreach ($paths as $path) {
-				$path = rtrim(DIR_IMAGE . $path, '/');
+				$path = rtrim($seller_images . $path, '/');
 
 				// If path is just a file delete it
 				if (is_file($path)) {
