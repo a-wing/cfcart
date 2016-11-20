@@ -18,6 +18,8 @@ $_['tab_option']                    = '选项';
 
 
 // Text
+$_['text_enabled']           = '审核通过';
+$_['text_disabled']          = '待审核';
 $_['text_success']           = '成功: 已经修改项目！';
 $_['text_list']              = '项目列表';
 $_['text_add']               = '添加项目';

@@ -30,6 +30,7 @@ CREATE TABLE `mcc_seller` (
   `seller_id` int(11) NOT NULL AUTO_INCREMENT,
   `customer_id` int(11) NOT NULL,
   `sellername` varchar(32) NOT NULL,
+  `product_id` int(11) NOT NULL,
   PRIMARY KEY (`seller_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 

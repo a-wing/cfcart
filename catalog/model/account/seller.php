@@ -24,4 +24,10 @@ class ModelAccountSeller extends Model {
 
 		return $query->row;
 	}
+
+	public function sellerProduct($customer_id, $product_id) {
+		$this->db->query("UPDATE " . DB_PREFIX . "seller SET product_id = '" . (int)$product_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
+
+		return $query->row;
+	}
 }
