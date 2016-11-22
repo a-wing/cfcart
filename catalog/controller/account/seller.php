@@ -43,11 +43,19 @@ class ControllerAccountSeller extends Controller {
 		if(isset($seller['seller_id'])) {
 			$data['sign'] = $seller['seller_id'];
 			$this->session->data['token'] = token(32);
+			
+			if($seller['product_id'] == "0") {
+				$data['product_sign'] = $seller['product_id'];
+			} else {
+				$data['product_sign'] = NULL;
+				$this->response->redirect($this->url->link('crowd/product', '', true));
+			}
+			
+			
 		} else {
 			$data['sign'] = NULL;
 		}
-		
-		
+
 		if(!isset($seller['seller_id'])) {
 
 			if(isset($_POST['seller-name'])){

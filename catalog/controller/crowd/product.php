@@ -23,7 +23,7 @@ class ControllerCrowdProduct extends Controller {
 
 		$this->load->model('crowd/product');
 
-		$this->add();
+		$this->getList();
 	}
 
 	public function add() {
@@ -84,7 +84,11 @@ class ControllerCrowdProduct extends Controller {
 			$addproduct['manufacturer_id'] = 0;
 			
 
-			$this->model_crowd_product->addProduct($addproduct);
+			//$this->model_crowd_product->addProduct($addproduct);
+			
+			$this->load->model('account/seller');
+			//$seller = $this->model_account_seller->checkoutSeller($this->customer->getId());
+			$this->model_account_seller->sellerProduct($this->customer->getId(), $this->model_crowd_product->addProduct($addproduct));
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -130,16 +134,16 @@ class ControllerCrowdProduct extends Controller {
 
 		$this->getForm();
 	}
-/*
+
 	public function edit() {
-		$this->load->language('catalog/product');
+		$this->load->language('crowd/product');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$this->load->model('catalog/product');
+		$this->load->model('crowd/product');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-			$this->model_catalog_product->editProduct($this->request->get['product_id'], $this->request->post);
+			$this->model_crowd_product->editProduct($this->request->get['product_id'], $this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -177,12 +181,12 @@ class ControllerCrowdProduct extends Controller {
 				$url .= '&page=' . $this->request->get['page'];
 			}
 
-			$this->response->redirect($this->url->link('catalog/product', 'token=' . $this->session->data['token'] . $url, true));
+			$this->response->redirect($this->url->link('crowd/product', 'token=' . $this->session->data['token'] . $url, true));
 		}
 
 		$this->getForm();
 	}
-
+/*
 	public function delete() {
 		$this->load->language('catalog/product');
 
@@ -290,7 +294,7 @@ class ControllerCrowdProduct extends Controller {
 
 		$this->getList();
 	}
-
+*/
 	protected function getList() {
 		if (isset($this->request->get['filter_name'])) {
 			$filter_name = $this->request->get['filter_name'];
@@ -388,12 +392,12 @@ class ControllerCrowdProduct extends Controller {
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_home'),
-			'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true)
+			'href' => $this->url->link('common/home', 'token=' . $this->session->data['token'], true)
 		);
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . $url, true)
+			'href' => $this->url->link('crowd/product', 'token=' . $this->session->data['token'] . $url, true)
 		);
 
 		$data['add'] = $this->url->link('catalog/product/add', 'token=' . $this->session->data['token'] . $url, true);
@@ -417,11 +421,17 @@ class ControllerCrowdProduct extends Controller {
 
 		$this->load->model('tool/image');
 
-		$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
+		$product_total = $this->model_crowd_product->getTotalProducts($filter_data);
 
-		$results = $this->model_catalog_product->getProducts($filter_data);
+		$results = $this->model_crowd_product->getProducts($filter_data);
 
+		//////////////////////////////////////////////////////////////////////////
+		$this->load->model('account/seller');
+		$seller = $this->model_account_seller->checkoutSeller($this->customer->getId());
+		
 		foreach ($results as $result) {
+			if ($result['product_id'] == $seller['product_id']){
+			////////////////////////////////////////////////
 			if (is_file(DIR_IMAGE . $result['image'])) {
 				$image = $this->model_tool_image->resize($result['image'], 40, 40);
 			} else {
@@ -430,7 +440,7 @@ class ControllerCrowdProduct extends Controller {
 
 			$special = false;
 
-			$product_specials = $this->model_catalog_product->getProductSpecials($result['product_id']);
+			$product_specials = $this->model_crowd_product->getProductSpecials($result['product_id']);
 
 			foreach ($product_specials  as $product_special) {
 				if (($product_special['date_start'] == '0000-00-00' || strtotime($product_special['date_start']) < time()) && ($product_special['date_end'] == '0000-00-00' || strtotime($product_special['date_end']) > time())) {
@@ -449,8 +459,10 @@ class ControllerCrowdProduct extends Controller {
 				'special'    => $special,
 				'quantity'   => $result['quantity'],
 				'status'     => $result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled'),
-				'edit'       => $this->url->link('catalog/product/edit', 'token=' . $this->session->data['token'] . '&product_id=' . $result['product_id'] . $url, true)
+				'edit'       => $this->url->link('crowd/product/edit', 'token=' . $this->session->data['token'] . '&product_id=' . $result['product_id'] . $url, true)
 			);
+			/////////////////////////////////////////////
+			}
 		}
 
 		$data['heading_title'] = $this->language->get('heading_title');
@@ -585,7 +597,7 @@ class ControllerCrowdProduct extends Controller {
 		$pagination->total = $product_total;
 		$pagination->page = $page;
 		$pagination->limit = $this->config->get('config_limit_admin');
-		$pagination->url = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . $url . '&page={page}', true);
+		$pagination->url = $this->url->link('crowd/product', 'token=' . $this->session->data['token'] . $url . '&page={page}', true);
 
 		$data['pagination'] = $pagination->render();
 
@@ -605,9 +617,9 @@ class ControllerCrowdProduct extends Controller {
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 
-		$this->response->setOutput($this->load->view('catalog/product_list', $data));
+		$this->response->setOutput($this->load->view('crowd/product_list', $data));
 	}
-*/
+
 	protected function getForm() {
 		$data['heading_title'] = $this->language->get('heading_title');
 
@@ -812,10 +824,10 @@ class ControllerCrowdProduct extends Controller {
 		$data['cancel'] = $this->url->link('account/account');
 
 		if (isset($this->request->get['product_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
-			$product_info = $this->model_catalog_product->getProduct($this->request->get['product_id']);
+			$product_info = $this->model_crowd_product->getProduct($this->request->get['product_id']);
 		}
 
-		//$data['token'] = $this->session->data['token'];
+		$data['token'] = $this->session->data['token'];
 
 		$this->load->model('localisation/language');
 
@@ -824,7 +836,7 @@ class ControllerCrowdProduct extends Controller {
 		if (isset($this->request->post['product_description'])) {
 			$data['product_description'] = $this->request->post['product_description'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$data['product_description'] = $this->model_catalog_product->getProductDescriptions($this->request->get['product_id']);
+			$data['product_description'] = $this->model_crowd_product->getProductDescriptions($this->request->get['product_id']);
 		} else {
 			$data['product_description'] = array();
 		}

@@ -17,12 +17,11 @@
       <div class="row">
         <div class="col-sm-12">
           <div class="well">
-		  
-		  
+
 			<h2><?php echo $text_seller; ?></h2>
 			<?php if(isset($sign)) {?>
 				<ul class="list-unstyled">
-					<li><a href="index.php?route=crowd/product"><?php echo $text_seller_product; ?></a></li>
+					<li><a href="index.php?route=crowd/product/add"><?php echo $text_seller_product; ?></a></li>
 				</ul>
 
 			<?php } else {?>
