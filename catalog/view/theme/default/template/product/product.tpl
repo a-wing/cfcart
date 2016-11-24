@@ -242,21 +242,18 @@
                 <?php foreach ($option['product_option_value'] as $option_value) { ?>
                 <div class="radio">
                   
-				  
-				  
 				  <form action="index.php?route=checkout/checkout" method="post">
 				  <div class="panel panel-info">
 					<div class="panel-heading">
 						<h3 class="panel-title">
-						<?php echo $option_value['describe']['1']['summary']; ?>
+						<?php echo $option_value['describe']['summary']; ?>
 						<div class="text-right">
 						<input class="btn btn-primary" type="submit" value=<?php echo "支持"; ?><?php echo $option_value['price']; ?>>
 							</div>
-							
 						</h3>
 					</div>
 					<div class="panel-body">
-						<h5><?php echo $option_value['describe']['1']['detail']; ?></h5>
+						<h5><?php echo $option_value['describe']['detail']; ?></h5>
 					</div>
 				  </div> 
 				  

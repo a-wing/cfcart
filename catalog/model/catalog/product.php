@@ -347,10 +347,10 @@ class ModelCatalogProduct extends Model {
 
 			foreach ($product_option_value_query->rows as $product_option_value) {
 				
-				$product_option_description_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_option_describe WHERE product_id = '" . (int)$product_id . "' AND option_value_id = '" . (int)$product_option_value['option_value_id'] . "'");
+				$product_option_description_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_option_describe WHERE product_id = '" . (int)$product_id . "' AND option_value_id = '" . (int)$product_option_value['option_value_id'] . "' AND language_id = '" . (int)$this->config->get('config_language_id') . "'");
 
 				foreach ($product_option_description_query->rows as $product_option_description) {
-					$product_option_description_data[$product_option_description['language_id']] = array(
+					$product_option_description_data = array(
 					'summary' => $product_option_description['summary'],
 					'detail' => $product_option_description['detail']
 					);
