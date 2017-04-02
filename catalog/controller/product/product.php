@@ -158,7 +158,7 @@ class ControllerProductProduct extends Controller {
 		//////////////////////////////////////////
 		//$this->load->model('module/funding');
 		$this->load->model('catalog/product');
-		
+
 		$product_info = $this->model_catalog_product->getProduct($product_id);
 		//echo $product_info['name'];
 
@@ -175,8 +175,9 @@ class ControllerProductProduct extends Controller {
 		$results = $this->model_catalog_product->getPurchased($filter_data);
 		//var_dump($results);
 		foreach ($results as $result) {
+
 			if($product_info['name'] == $result['name']){
-			//echo "ABCD";
+
 			//$fundingtotal = $this->currency->format($result['total'], $this->config->get('config_currency'));
 			$fundingtotal = floatval($result['total']);
 			}
@@ -185,8 +186,8 @@ class ControllerProductProduct extends Controller {
 		//$this->load->model('catalog/product');
 
 		//$product_info = $this->model_catalog_product->getProduct($product_id);
-		
-		
+
+
 		//////////////////////////////////////////
 		// order person _supporter
 		/////////////////////////////////////////
@@ -195,8 +196,8 @@ class ControllerProductProduct extends Controller {
 		$this->document->setTitle($this->language->get('heading_title'));
 
 		$this->load->model('sale/order');
-		
-		
+
+
 		$filter_data = array(
 			'filter_order_id'      => NULL,
 			'filter_customer'	     => NULL,
@@ -216,17 +217,16 @@ class ControllerProductProduct extends Controller {
 //var_dump($results);
 //var_dump($product_info['name']);
 		$supporter = 0;
-		
+
 		$days=round((strtotime($product_info['date_undercarriage'])-strtotime(date("Y-m-d")))/86400)+1;
-		
+
 		foreach ($results as $result) {
-			
+
 			$products = $this->model_sale_order->getOrderProducts($result['order_id']);
-			
+
 			foreach ($products as $product) {
-			//var_dump($product['name']);
-				
-				if($product['name'] == $product_info['name']) {
+
+				if($product['product_id'] == $product_info['product_id']) {
 					$supporter = ++$supporter;
 					//var_dump($product['name']);
 					$data['orders'][] = array(
@@ -240,7 +240,7 @@ class ControllerProductProduct extends Controller {
 					}
 				}
 			}
-		
+
 		////////////////////////////////////////
 
 		if ($product_info) {
@@ -364,7 +364,7 @@ class ControllerProductProduct extends Controller {
 			$data['text_day'] = $this->language->get('text_day');
 			$data['day_remaining'] = $this->language->get('day_remaining');
 			////////////////////
-			
+
 			////////////////////////////////////
 			$data['date_end']	  = $days ;
 			if (isset($fundingtotal)) {
