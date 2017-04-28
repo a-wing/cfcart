@@ -576,6 +576,7 @@ class ControllerCatalogProduct extends Controller {
 		$data['entry_minimum'] = $this->language->get('entry_minimum');
 		$data['entry_shipping'] = $this->language->get('entry_shipping');
 		$data['entry_date_available'] = $this->language->get('entry_date_available');
+		$data['entry_date_undercarriage'] = $this->language->get('entry_date_undercarriage');
 		$data['entry_quantity'] = $this->language->get('entry_quantity');
 		$data['entry_stock_status'] = $this->language->get('entry_stock_status');
 		$data['entry_price'] = $this->language->get('entry_price');
@@ -602,6 +603,10 @@ class ControllerCatalogProduct extends Controller {
 		$data['entry_text'] = $this->language->get('entry_text');
 		$data['entry_option'] = $this->language->get('entry_option');
 		$data['entry_option_value'] = $this->language->get('entry_option_value');
+		
+		$data['entry_summary'] = $this->language->get('entry_summary');
+		$data['entry_detail'] = $this->language->get('entry_detail');
+		
 		$data['entry_required'] = $this->language->get('entry_required');
 		$data['entry_sort_order'] = $this->language->get('entry_sort_order');
 		$data['entry_status'] = $this->language->get('entry_status');
@@ -888,6 +893,14 @@ class ControllerCatalogProduct extends Controller {
 		} else {
 			$data['date_available'] = date('Y-m-d');
 		}
+		
+		if (isset($this->request->post['date_undercarriage'])) {
+			$data['date_undercarriage'] = $this->request->post['date_undercarriage'];
+		} elseif (!empty($product_info)) {
+			$data['date_undercarriage'] = ($product_info['date_undercarriage'] != '0000-00-00') ? $product_info['date_undercarriage'] : '';
+		} else {
+			$data['date_undercarriage'] = date('Y-m-d');
+		}
 
 		if (isset($this->request->post['quantity'])) {
 			$data['quantity'] = $this->request->post['quantity'];
@@ -1122,7 +1135,8 @@ class ControllerCatalogProduct extends Controller {
 						'points'                  => $product_option_value['points'],
 						'points_prefix'           => $product_option_value['points_prefix'],
 						'weight'                  => $product_option_value['weight'],
-						'weight_prefix'           => $product_option_value['weight_prefix']
+						'weight_prefix'           => $product_option_value['weight_prefix'],
+						'describe'           	  => $product_option_value['describe'],
 					);
 				}
 			}
