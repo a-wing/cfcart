@@ -35,6 +35,7 @@ class ModelCatalogProduct extends Model {
 				'points'           => $query->row['points'],
 				'tax_class_id'     => $query->row['tax_class_id'],
 				'date_available'   => $query->row['date_available'],
+				'date_undercarriage'		   => $query->row['date_undercarriage'],
 				'weight'           => $query->row['weight'],
 				'weight_class_id'  => $query->row['weight_class_id'],
 				'length'           => $query->row['length'],
@@ -274,17 +275,17 @@ class ModelCatalogProduct extends Model {
 
 	public function getPopularProducts($limit) {
 		$product_data = $this->cache->get('product.popular.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
-	
+
 		if (!$product_data) {
 			$query = $this->db->query("SELECT p.product_id FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY p.viewed DESC, p.date_added DESC LIMIT " . (int)$limit);
-	
+
 			foreach ($query->rows as $result) {
 				$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
 			}
-			
+
 			$this->cache->set('product.popular.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit, $product_data);
 		}
-		
+
 		return $product_data;
 	}
 
@@ -345,6 +346,18 @@ class ModelCatalogProduct extends Model {
 			$product_option_value_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_option_value pov LEFT JOIN " . DB_PREFIX . "option_value ov ON (pov.option_value_id = ov.option_value_id) LEFT JOIN " . DB_PREFIX . "option_value_description ovd ON (ov.option_value_id = ovd.option_value_id) WHERE pov.product_id = '" . (int)$product_id . "' AND pov.product_option_id = '" . (int)$product_option['product_option_id'] . "' AND ovd.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY ov.sort_order");
 
 			foreach ($product_option_value_query->rows as $product_option_value) {
+
+				$product_option_description_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_option_describe WHERE product_id = '" . (int)$product_id . "' AND option_value_id = '" . (int)$product_option_value['option_value_id'] . "' AND language_id = '" . (int)$this->config->get('config_language_id') . "'");
+
+				foreach ($product_option_description_query->rows as $product_option_description) {
+					$product_option_description_data = array(
+					'summary' => $product_option_description['summary'],
+					'detail' => $product_option_description['detail']
+					);
+				}
+
+
+
 				$product_option_value_data[] = array(
 					'product_option_value_id' => $product_option_value['product_option_value_id'],
 					'option_value_id'         => $product_option_value['option_value_id'],
@@ -355,7 +368,8 @@ class ModelCatalogProduct extends Model {
 					'price'                   => $product_option_value['price'],
 					'price_prefix'            => $product_option_value['price_prefix'],
 					'weight'                  => $product_option_value['weight'],
-					'weight_prefix'           => $product_option_value['weight_prefix']
+					'weight_prefix'           => $product_option_value['weight_prefix'],
+					'describe'				  => $product_option_description_data
 				);
 			}
 
@@ -536,4 +550,42 @@ class ModelCatalogProduct extends Model {
 			return 0;
 		}
 	}
+	/////////////////////////////////////
+
+	public function getPurchased($data = array()) {
+		$sql = "SELECT op.product_id, op.name, op.model, SUM(op.quantity) AS quantity, SUM(op.price + (op.tax * op.quantity)) AS total FROM " . DB_PREFIX . "order_product op LEFT JOIN `" . DB_PREFIX . "order` o ON (op.order_id = o.order_id)";
+
+		if (!empty($data['filter_order_status_id'])) {
+			$sql .= " WHERE o.order_status_id = '" . (int)$data['filter_order_status_id'] . "'";
+		} else {
+			$sql .= " WHERE o.order_status_id > '0'";
+		}
+
+		if (!empty($data['filter_date_start'])) {
+			$sql .= " AND DATE(o.date_added) >= '" . $this->db->escape($data['filter_date_start']) . "'";
+		}
+
+		if (!empty($data['filter_date_end'])) {
+			$sql .= " AND DATE(o.date_added) <= '" . $this->db->escape($data['filter_date_end']) . "'";
+		}
+
+		$sql .= " GROUP BY op.product_id ORDER BY total DESC";
+
+		if (isset($data['start']) || isset($data['limit'])) {
+			if ($data['start'] < 0) {
+				$data['start'] = 0;
+			}
+
+			if ($data['limit'] < 1) {
+				$data['limit'] = 20;
+			}
+
+			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
+		}
+
+		$query = $this->db->query($sql);
+
+		return $query->rows;
+	}
+
 }
