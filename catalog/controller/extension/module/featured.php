@@ -2,26 +2,17 @@
 class ControllerExtensionModuleFeatured extends Controller {
 	public function index($setting) {
 		$this->load->language('extension/module/featured');
-		$this->load->language('extension/module/crowdfunding');
 
 		$data['heading_title'] = $this->language->get('heading_title');
 
 		$data['text_tax'] = $this->language->get('text_tax');
-		////crowdfunding////
-		$data['text_fundingtotal'] = $this->language->get('text_fundingtotal');
-		$data['text_target'] = $this->language->get('text_target');
-		/////////
-		$data['currency'] = $this->language->get('currency');
-		$data['text_day'] = $this->language->get('text_day');
-		$data['day_remaining'] = $this->language->get('day_remaining');
-		////////////////////
 
 		$data['button_cart'] = $this->language->get('button_cart');
 		$data['button_wishlist'] = $this->language->get('button_wishlist');
 		$data['button_compare'] = $this->language->get('button_compare');
 
 		$this->load->model('catalog/product');
-		
+
 		$this->load->model('tool/image');
 
 		$data['products'] = array();
@@ -66,54 +57,11 @@ class ControllerExtensionModuleFeatured extends Controller {
 					} else {
 						$rating = false;
 					}
-					///////////////////////////////////////////
-					//crowdfunding progress
-					//////////////////////////////////////////
-
-					//$product_info = $this->model_catalog_product->getProduct($product_id);
-					//echo $product_info['name'];
-					
-					$filter_data = array(
-						'filter_date_start'	     => NULL,
-						'filter_date_end'	     => NULL,
-						'filter_order_status_id' => 5,
-						'start'                  => NULL,
-						'limit'                  => NULL
-					);
-					$results = $this->model_catalog_product->getPurchased($filter_data);
-					//var_dump($results);
-					//echo "<br>";
-					$fundingtotal = 0;
-					foreach ($results as $result) {
-						
-						if($product_info['name'] == $result['name']){
-			//echo "ABCD";
-			//$fundingtotal = $this->currency->format($result['total'], $this->config->get('config_currency'));
-							$fundingtotal = $result['total'];
-						}
-					}
-					//var_dump($fundingtotal);
-					///////////////////////////////////////////
-					//date-end
-					//////////////////////////////////////////
-					//echo $showtime=date("Y-m-d");
-					//$startdate=strtotime(date("Y-m-d"));
-					//$enddate=strtotime($product_info['date_end']);
-					$days=round((strtotime($product_info['date_undercarriage'])-strtotime(date("Y-m-d")))/86400)+1;
-					//echo $days;
-					//echo "<br/>";
-					//////////////////////////////////////////
-
-
 
 					$data['products'][] = array(
 						'product_id'  => $product_info['product_id'],
 						'thumb'       => $image,
 						'name'        => $product_info['name'],
-						'fundingtotal'        => $fundingtotal,
-						'date_end'	  => $days,
-						'quantity'	  => $product_info['quantity'],
-						'model'		  => $product_info['model'],
 						'description' => utf8_substr(strip_tags(html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_product_description_length')) . '..',
 						'price'       => $price,
 						'special'     => $special,

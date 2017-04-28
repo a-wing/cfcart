@@ -41,13 +41,6 @@
             <?php if ($review_status) { ?>
             <li><a href="#tab-review" data-toggle="tab"><?php echo $tab_review; ?></a></li>
             <?php } ?>
-            <!--supporter
-            -->
-            <?php if ($review_status) { ?>
-            <li><a href="#tab-supporter" data-toggle="tab"><?php echo "支持者 ("; echo $supporter_total; echo ")";//echo $tab_review; ?></a></li>
-            <?php } ?>
-            <!--supporter
-            -->
           </ul>
           <div class="tab-content">
             <div class="tab-pane active" id="tab-description"><?php echo $description; ?></div>
@@ -118,34 +111,6 @@
               </form>
             </div>
             <?php } ?>
-            <!--supporter
-            -->
-            <?php if($supporter_total == 0) {?>
-            <div class="tab-pane" id="tab-supporter">
-            <div>(- T -!)</div>
-            </div>
-            <?php } else {?>
-            <?php //if ($review_status) { ?>
-            <div class="tab-pane" id="tab-supporter">
-            <?php foreach ($orders as $order) { ?>
-            <table class="table" style="color: cyan;">
-        			<tr>
-        				<td><?php echo $order['customer']; ?></td>
-      				<td><?php echo $order['total']; ?></td>
-      				<td><?php echo $order['date_modified']; ?></td>
-      			</tr>
-        		</table>
-        		<?php //} ?>
-            <?php } ?>
-            <!--
-              <form class="form-horizontal" id="form-supporter">
-             
-              </form>
-              -->
-            </div>
-            <?php } ?>
-            <!--supporter
-            -->
           </div>
         </div>
         <?php if ($column_left || $column_right) { ?>
@@ -156,42 +121,24 @@
         <div class="<?php echo $class; ?>">
           <div class="btn-group">
             <button type="button" data-toggle="tooltip" class="btn btn-default" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $product_id; ?>');"><i class="fa fa-heart"></i></button>
-            <!--<button type="button" data-toggle="tooltip" class="btn btn-default" title="<?php echo $button_compare; ?>" onclick="compare.add('<?php echo $product_id; ?>');"><i class="fa fa-exchange"></i></button>-->
+            <button type="button" data-toggle="tooltip" class="btn btn-default" title="<?php echo $button_compare; ?>" onclick="compare.add('<?php echo $product_id; ?>');"><i class="fa fa-exchange"></i></button>
           </div>
-          <div>
-          <h1><?php echo $heading_title; ?></h1><h4 class="text-right" style="color: #990099;"><?php echo $funding/intval($model)*100; ?> %</h4>
-          </div>
+          <h1><?php echo $heading_title; ?></h1>
           <ul class="list-unstyled">
-            <?php //if ($manufacturer) { ?>
-			<div class="progress progress-striped active">
-			<div class="progress-bar progress-bar-danger" role="progressbar" 
-				aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" 
-				style="width: <?php echo intval($funding)/intval($model)*100; ?>%;">
-				<!--style="width: <?php echo (intval($model)-intval($stock))/intval($model)*100; ?>%;">-->
-			</div>
-		</div>
-		<h4 style="color: #990099;"><span><?php echo $text_fundingtotal; ?></span><span class="pull-right"><?php echo $currency;?><?php echo $funding; ?></span></h4>
-		
-		<h4 style="color: #990099;"><span><?php echo $day_remaining; ?></span><span class="pull-right"><?php echo $date_end; ?><?php echo $text_day; ?></span></h4>
-		<!--
-		<div align="right"><h2><?php echo $funding; ?></h2><br/>
-		<?php
-		//echo intval($funding);
-		echo $funding/intval($model)*100;
-		?>%</div>
-            <!--<li><?php echo $text_manufacturer; ?> <a href="<?php echo $manufacturers; ?>"><?php echo $manufacturer; ?></a></li>
-            <?php //} ?>
+            <?php if ($manufacturer) { ?>
+            <li><?php echo $text_manufacturer; ?> <a href="<?php echo $manufacturers; ?>"><?php echo $manufacturer; ?></a></li>
+            <?php } ?>
             <li><?php echo $text_model; ?> <?php echo $model; ?></li>
             <?php if ($reward) { ?>
             <li><?php echo $text_reward; ?> <?php echo $reward; ?></li>
             <?php } ?>
-            <li><?php echo $text_stock; ?> <?php echo $stock; ?></li>-->
+            <li><?php echo $text_stock; ?> <?php echo $stock; ?></li>
           </ul>
           <?php if ($price) { ?>
           <ul class="list-unstyled">
             <?php if (!$special) { ?>
             <li>
-              <h2><?php //echo $price; ?></h2>
+              <h2><?php echo $price; ?></h2>
             </li>
             <?php } else { ?>
             <li><span style="text-decoration: line-through;"><?php echo $price; ?></span></li>
@@ -236,31 +183,20 @@
             </div>
             <?php } ?>
             <?php if ($option['type'] == 'radio') { ?>
-            <div class="form-group<?php //echo ($option['required'] ? ' required' : ''); ?>">
-              <label class="control-label"><?php //echo $option['name']; ?></label>
+            <div class="form-group<?php echo ($option['required'] ? ' required' : ''); ?>">
+              <label class="control-label"><?php echo $option['name']; ?></label>
               <div id="input-option<?php echo $option['product_option_id']; ?>">
                 <?php foreach ($option['product_option_value'] as $option_value) { ?>
                 <div class="radio">
-                  
-				  <form action="index.php?route=checkout/checkout" method="post">
-				  <div class="panel panel-info">
-					<div class="panel-heading">
-						<h3 class="panel-title">
-						<?php echo $option_value['describe']['summary']; ?>
-						<div class="text-right">
-						<input class="btn btn-primary" type="submit" value=<?php echo "支持"; ?><?php echo $option_value['price']; ?>>
-							</div>
-						</h3>
-					</div>
-					<div class="panel-body">
-						<h5><?php echo $option_value['describe']['detail']; ?></h5>
-					</div>
-				  </div> 
-				  
-						<input type="hidden" name="product_id" value="<?php echo $product_id; ?>" />
-						<input type="hidden" name="option[<?php echo $option['product_option_id']; ?>]" value="<?php echo $option_value['product_option_value_id']; ?>" />
-					</form>
-					<label>
+                  <label>
+                    <input type="radio" name="option[<?php echo $option['product_option_id']; ?>]" value="<?php echo $option_value['product_option_value_id']; ?>" />
+                    <?php if ($option_value['image']) { ?>
+                    <img src="<?php echo $option_value['image']; ?>" alt="<?php echo $option_value['name'] . ($option_value['price'] ? ' ' . $option_value['price_prefix'] . $option_value['price'] : ''); ?>" class="img-thumbnail" /> 
+                    <?php } ?>                    
+                    <?php echo $option_value['name']; ?>
+                    <?php if ($option_value['price']) { ?>
+                    (<?php echo $option_value['price_prefix']; ?><?php echo $option_value['price']; ?>)
+                    <?php } ?>
                   </label>
                 </div>
                 <?php } ?>
@@ -352,7 +288,13 @@
               <div class="help-block" id="recurring-description"></div>
             </div>
             <?php } ?>
-            <hr>
+            <div class="form-group">
+              <label class="control-label" for="input-quantity"><?php echo $entry_qty; ?></label>
+              <input type="text" name="quantity" value="<?php echo $minimum; ?>" size="2" id="input-quantity" class="form-control" />
+              <input type="hidden" name="product_id" value="<?php echo $product_id; ?>" />
+              <br />
+              <button type="button" id="button-cart" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary btn-lg btn-block"><?php echo $button_cart; ?></button>
+            </div>
             <?php if ($minimum > 1) { ?>
             <div class="alert alert-info"><i class="fa fa-info-circle"></i> <?php echo $text_minimum; ?></div>
             <?php } ?>
@@ -510,8 +452,7 @@ $('#button-cart').on('click', function() {
 			}
 
 			if (json['success']) {
-				location = 'index.php?route=checkout/checkout';
-				//$('.breadcrumb').after('<div class="alert alert-success">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+				$('.breadcrumb').after('<div class="alert alert-success">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
 
 				$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
 

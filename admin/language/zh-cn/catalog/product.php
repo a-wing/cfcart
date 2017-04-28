@@ -1,14 +1,14 @@
 <?php
 
 // Heading
-$_['heading_title']          = '项目';
+$_['heading_title']          = '商品';
 
 // Text
-$_['text_success']           = '成功: 已经修改项目！';
-$_['text_list']              = '项目列表';
-$_['text_add']               = '添加项目';
+$_['text_success']           = '成功: 已经修改商品！';
+$_['text_list']              = '商品列表';
+$_['text_add']               = '添加商品';
 $_['text_tmall_add']         = '导入天猫商品';
-$_['text_edit']              = '编辑项目';
+$_['text_edit']              = '编辑商品';
 $_['text_plus']              = '+';
 $_['text_minus']             = '-';
 $_['text_default']           = '默认';
@@ -18,24 +18,24 @@ $_['text_percent']           = '百分比';
 $_['text_amount']            = '固定值';
 
 // Column
-$_['column_name']            = '项目名称';
-$_['column_model']           = '目标金额';
+$_['column_name']            = '商品名称';
+$_['column_model']           = '型号';
 $_['column_image']           = '图像';
-$_['column_id']              = '项目ID';
+$_['column_id']              = '商品ID';
 $_['column_price']           = '价格';
 $_['column_quantity']        = '数量';
 $_['column_status']          = '状态';
 $_['column_action']          = '操作';
 
 // Entry
-$_['entry_name']             = '项目名称';
+$_['entry_name']             = '商品名称';
 $_['entry_description']      = '描述';
 $_['entry_meta_title'] 	     = 'Meta Tag 标题';
 $_['entry_meta_keyword'] 	 = 'Meta Tag 关键词';
 $_['entry_meta_description'] = 'Meta Tag 描述';
 $_['entry_keyword']          = 'SEO URL';
-$_['entry_model']            = '目标金额';
-$_['entry_product_id']  	 = '项目 ID';
+$_['entry_model']            = '型号';
+$_['entry_product_id']  	 = '商品 ID';
 $_['entry_sku']              = 'SKU';
 $_['entry_upc']              = 'UPC';
 $_['entry_ean']              = 'EAN';
@@ -47,17 +47,11 @@ $_['entry_shipping']         = '需要配送';
 $_['entry_manufacturer']     = '制造商/品牌';
 $_['entry_store']            = '商店';
 $_['entry_date_available']   = '上架日期';
-$_['entry_date_undercarriage'] = '下架日期';
 $_['entry_quantity']         = '数量';
 $_['entry_minimum']          = '最小购买数量';
 $_['entry_stock_status']     = '缺货时状态';
 $_['entry_price']            = '价格';
 $_['entry_tax_class']        = '税率';
-
-
-$_['entry_summary']          = '简介';
-$_['entry_detail']			 = '描述';
-
 $_['entry_points']           = '所需积分';
 $_['entry_option_points']    = '所需积分';
 $_['entry_subtract']         = '减少库存';

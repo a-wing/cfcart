@@ -21,7 +21,7 @@ $_['text_note']                = '<span class="text-danger">注意:</span> 不�
 $_['text_success']             = '感谢您的意见。 已向管理员提交审批请求。';
 $_['text_related']             = '相关商品';
 $_['text_tags']                = '标签:';
-$_['text_error']               = '未发现该项目！';
+$_['text_error']               = '未发现该商品！';
 $_['text_payment_recurring']   = '分期付款';
 $_['text_trial_description']   = '%s every %d %s(s) for %d payment(s) then';
 $_['text_payment_description'] = '%s every %d %s(s) for %d payment(s)';

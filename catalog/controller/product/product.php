@@ -153,95 +153,10 @@ class ControllerProductProduct extends Controller {
 		} else {
 			$product_id = 0;
 		}
-		///////////////////////////////////////////
-		//crowdfunding progress
-		//////////////////////////////////////////
-		//$this->load->model('module/funding');
+
 		$this->load->model('catalog/product');
 
 		$product_info = $this->model_catalog_product->getProduct($product_id);
-		//echo $product_info['name'];
-
-		$filter_data = array(
-			'filter_date_start'	     => NULL,
-			'filter_date_end'	     => NULL,
-			'filter_order_status_id' => 5,
-			'start'                  => NULL,
-			'limit'                  => NULL
-		);
-		//var_dump($filter_data);
-		//$product_total = $this->model_report_product->getTotalPurchased($filter_data);
-		//var_dump($product_total);
-		$results = $this->model_catalog_product->getPurchased($filter_data);
-		//var_dump($results);
-		foreach ($results as $result) {
-
-			if($product_info['name'] == $result['name']){
-
-			//$fundingtotal = $this->currency->format($result['total'], $this->config->get('config_currency'));
-			$fundingtotal = floatval($result['total']);
-			}
-		}
-		//////////////////////////////////////////
-		//$this->load->model('catalog/product');
-
-		//$product_info = $this->model_catalog_product->getProduct($product_id);
-
-
-		//////////////////////////////////////////
-		// order person _supporter
-		/////////////////////////////////////////
-		$this->load->language('sale/order');
-
-		$this->document->setTitle($this->language->get('heading_title'));
-
-		$this->load->model('sale/order');
-
-
-		$filter_data = array(
-			'filter_order_id'      => NULL,
-			'filter_customer'	     => NULL,
-			'filter_order_status'  => NULL,
-			'filter_total'         => NULL,
-			'filter_date_added'    => NULL,
-			'filter_date_modified' => NULL,
-			'sort'                 => 'o.date_modified',
-			'order'                => 'DESC',
-			'start'                => 0,//($page - 1) * $this->config->get('config_limit_admin'),
-			'limit'                => '20'//$this->config->get('config_limit_admin')
-		);
-//var_dump($filter_data);
-		//$order_total = $this->model_sale_order->getTotalOrders($filter_data);
-
-		$results = $this->model_sale_order->getOrders($filter_data);
-//var_dump($results);
-//var_dump($product_info['name']);
-		$supporter = 0;
-
-		$days=round((strtotime($product_info['date_undercarriage'])-strtotime(date("Y-m-d")))/86400)+1;
-
-		foreach ($results as $result) {
-
-			$products = $this->model_sale_order->getOrderProducts($result['order_id']);
-
-			foreach ($products as $product) {
-
-				if($product['product_id'] == $product_info['product_id']) {
-					$supporter = ++$supporter;
-					//var_dump($product['name']);
-					$data['orders'][] = array(
-						'order_id'      => $result['order_id'],
-						'customer'      => $result['customer'],
-						'order_status'  => $result['order_status'],
-						'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
-						'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
-						'product'		 => $product['name']
-						);
-					}
-				}
-			}
-
-		////////////////////////////////////////
 
 		if ($product_info) {
 			$url = '';
@@ -355,23 +270,7 @@ class ControllerProductProduct extends Controller {
 			$data['reward'] = $product_info['reward'];
 			$data['points'] = $product_info['points'];
 			$data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
-			/////////////////////////////////////////
-			$this->load->language('extension/module/crowdfunding');
-			////crowdfunding////
-			$data['text_fundingtotal'] = $this->language->get('text_fundingtotal');
-			$data['text_target'] = $this->language->get('text_target');
-			$data['currency'] = $this->language->get('currency');
-			$data['text_day'] = $this->language->get('text_day');
-			$data['day_remaining'] = $this->language->get('day_remaining');
-			////////////////////
 
-			////////////////////////////////////
-			$data['date_end']	  = $days ;
-			if (isset($fundingtotal)) {
-				$data['funding'] = $fundingtotal;
-			} else {
-				$data['funding'] = 0;
-			}
 			if ($product_info['quantity'] <= 0) {
 				$data['stock'] = $product_info['stock_status'];
 			} elseif ($this->config->get('config_stock_display')) {
@@ -379,8 +278,6 @@ class ControllerProductProduct extends Controller {
 			} else {
 				$data['stock'] = $this->language->get('text_instock');
 			}
-			$data['supporter_total'] = $supporter;
-			/////////////////////////////////////
 
 			$this->load->model('tool/image');
 
@@ -455,8 +352,7 @@ class ControllerProductProduct extends Controller {
 							'name'                    => $option_value['name'],
 							'image'                   => $this->model_tool_image->resize($option_value['image'], 50, 50),
 							'price'                   => $price,
-							'price_prefix'            => $option_value['price_prefix'],
-							'describe'            	  => $option_value['describe']
+							'price_prefix'            => $option_value['price_prefix']
 						);
 					}
 				}

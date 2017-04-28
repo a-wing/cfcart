@@ -43,10 +43,6 @@
         <li><a href="<?php echo $transaction; ?>"><?php echo $text_transaction; ?></a></li>
         <li><a href="<?php echo $recurring; ?>"><?php echo $text_recurring; ?></a></li>
       </ul>
-	  <h2><?php //echo $text_my_newsletter; ?>发起项目</h2>
-      <ul class="list-unstyled">
-        <li><a href="/index.php?route=account/seller<?php //echo $newsletter; ?>"><?php //echo $text_newsletter; ?>发起项目</a></li>
-      </ul>
       <h2><?php echo $text_my_newsletter; ?></h2>
       <ul class="list-unstyled">
         <li><a href="<?php echo $newsletter; ?>"><?php echo $text_newsletter; ?></a></li>

@@ -249,16 +249,6 @@
                     </span></div>
                 </div>
               </div>
-			  <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-date-undercarriage"><?php echo $entry_date_undercarriage; ?></label>
-                <div class="col-sm-3">
-                  <div class="input-group date">
-                    <input type="text" name="date_undercarriage" value="<?php echo $date_undercarriage; ?>" placeholder="<?php echo $entry_date_undercarriage; ?>" data-date-format="YYYY-MM-DD" id="input-date-undercarriage" class="form-control" />
-                    <span class="input-group-btn">
-                    <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
-                    </span></div>
-                </div>
-              </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-length"><?php echo $entry_dimension; ?></label>
                 <div class="col-sm-10">
@@ -633,25 +623,8 @@
                                   <?php } ?>
                                 </select>
                                 <input type="text" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight]" value="<?php echo $product_option_value['weight']; ?>" placeholder="<?php echo $entry_weight; ?>" class="form-control" /></td>
-                              <td rowspan=2 class="text-left"><button type="button" onclick="$(this).tooltip('destroy');$('#option-value-row<?php echo $option_value_row; ?>').remove();$('#option-value-row<?php echo $option_value_row; ?>-describe').remove();" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
+                              <td class="text-left"><button type="button" onclick="$(this).tooltip('destroy');$('#option-value-row<?php echo $option_value_row; ?>').remove();" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
                             </tr>
-<!-------------------------------------------------------------->
-							<tr id="option-value-row<?php echo $option_value_row; ?>-describe">
-								<td><?php echo $entry_summary; ?></td>
-								<td colspan=1><?php foreach ($languages as $language) { ?>
-									<div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" title="<?php echo $language['name']; ?>" /></span>
-										<textarea name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][describe][<?php echo $language['language_id']; ?>][summary]" rows="1" placeholder="<?php echo $entry_text; ?>" class="form-control"><?php echo $product_option_value['describe'][$language['language_id']]["summary"]; ?></textarea>
-									</div>
-								  <?php } ?>
-								</td>
-								<td><?php echo $entry_detail; ?></td>
-								<td colspan=3><?php foreach ($languages as $language) { ?>
-									<div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" title="<?php echo $language['name']; ?>" /></span>
-										<textarea name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][describe][<?php echo $language['language_id']; ?>][detail]" rows="1" placeholder="<?php echo $entry_text; ?>" class="form-control"><?php echo $product_option_value['describe'][$language['language_id']]['detail']; ?></textarea>
-									</div>
-								  <?php } ?>
-								</td>
-							</tr>
                             <?php $option_value_row++; ?>
                             <?php } ?>
                           </tbody>
@@ -949,11 +922,9 @@
       </div>
     </div>
   </div>
-
   <script type="text/javascript" src="view/javascript/summernote/summernote.js"></script>
   <link href="view/javascript/summernote/summernote.css" rel="stylesheet" />
   <script type="text/javascript" src="view/javascript/summernote/opencart.js"></script>
-  
   <script type="text/javascript"><!--
 // Manufacturer
 $('input[name=\'manufacturer\']').autocomplete({
@@ -1316,26 +1287,8 @@ function addOptionValue(option_row) {
 	html += '    <option value="-">-</option>';
 	html += '  </select>';
 	html += '  <input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][weight]" value="" placeholder="<?php echo $entry_weight; ?>" class="form-control" /></td>';
-	html += '  <td rowspan=2 class="text-left"><button type="button" onclick="$(this).tooltip(\'destroy\');$(\'#option-value-row' + option_value_row + '\').remove();$(\'#option-value-row' + option_value_row + '-describe\').remove();" data-toggle="tooltip" rel="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+	html += '  <td class="text-left"><button type="button" onclick="$(this).tooltip(\'destroy\');$(\'#option-value-row' + option_value_row + '\').remove();" data-toggle="tooltip" rel="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
 	html += '</tr>';
-	
-	html += '		<tr id="option-value-row' + option_value_row + '-describe">';
-	html += '		 <td><?php echo $entry_summary; ?></td>';
-	html += '		 <td colspan=1><?php foreach ($languages as $language) { ?>';
-	html += '		  <div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" title="<?php echo $language['name']; ?>" /></span>';
-	html += '		   <textarea name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][describe][<?php echo $language['language_id']; ?>][summary]" rows="1" placeholder="<?php echo $entry_text; ?>" class="form-control"></textarea>';
-	html += '		  </div>';
-	html += '		  <?php } ?>';
-	html += '		 </td>';
-	html += '		 <td><?php echo $entry_detail; ?></td>';
-	html += '		 <td colspan=3><?php foreach ($languages as $language) { ?>';
-	html += '		  <div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" title="<?php echo $language['name']; ?>" /></span>';
-	html += '			<textarea name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][describe][<?php echo $language['language_id']; ?>][detail]" rows="1" placeholder="<?php echo $entry_text; ?>" class="form-control">	</textarea>';
-	html += '		  </div>';
-	html += '		  <?php } ?>';
-	html += '		</td>';
-	html += '      </tr>';
-	
 
 	$('#option-value' + option_row + ' tbody').append(html);
 	$('[rel=tooltip]').tooltip();

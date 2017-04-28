@@ -21,6 +21,7 @@
             </select>
           </div>
         </div>
+        
         <div class="form-group required">
           <label class="col-sm-2 control-label" for="input-zone"><?php echo $entry_zone; ?></label>
           <div class="col-sm-10">
@@ -28,6 +29,22 @@
             </select>
           </div>
         </div>
+        
+        <div class="form-group required" id="china-city">
+          <label class="col-sm-2 control-label" for="input-city"><?php echo $entry_city; ?></label>
+          <div class="col-sm-10">
+          	<select name="city_id" id="input-city" class="form-control">
+          	</select>
+          </div>
+        </div>
+        <div class="form-group required" id="china-district">
+          <label class="col-sm-2 control-label" for="input-district"><?php echo $entry_district; ?></label>
+          <div class="col-sm-10">
+          	<select name="district_id" id="input-district" class="form-control">
+          	</select>
+          </div>
+        </div>
+        
         <div class="form-group required">
           <label class="col-sm-2 control-label" for="input-postcode"><?php echo $entry_postcode; ?></label>
           <div class="col-sm-10">
@@ -41,7 +58,7 @@ $('#button-quote').on('click', function() {
 	$.ajax({
 		url: 'index.php?route=extension/total/shipping/quote',
 		type: 'post',
-		data: 'country_id=' + $('select[name=\'country_id\']').val() + '&zone_id=' + $('select[name=\'zone_id\']').val() + '&postcode=' + encodeURIComponent($('input[name=\'postcode\']').val()),
+		data: 'country_id=' + $('select[name=\'country_id\']').val() + '&zone_id=' + $('select[name=\'zone_id\']').val() + '&city_id=' + $('select[name=\'city_id\']').val() + '&district_id=' + $('select[name=\'district_id\']').val() + '&postcode=' + encodeURIComponent($('input[name=\'postcode\']').val()),
 		dataType: 'json',
 		beforeSend: function() {
 			$('#button-quote').button('loading');
@@ -65,6 +82,14 @@ $('#button-quote').on('click', function() {
 
 				if (json['error']['zone']) {
 					$('select[name=\'zone_id\']').after('<div class="text-danger">' + json['error']['zone'] + '</div>');
+				}
+				
+				if (json['error']['city']) {
+					$('select[name=\'city_id\']').after('<div class="text-danger">' + json['error']['city'] + '</div>');
+				}
+				
+				if (json['error']['district']) {
+					$('select[name=\'district_id\']').after('<div class="text-danger">' + json['error']['district'] + '</div>');
 				}
 
 				if (json['error']['postcode']) {
@@ -167,6 +192,13 @@ $(document).delegate('#button-shipping', 'click', function() {
 //--></script>
 <script type="text/javascript"><!--
 $('select[name=\'country_id\']').on('change', function() {
+	if (this.value == 44) {
+		$('#china-city').show();
+		$('#china-district').show();
+	} else {
+		$('#china-city').hide();
+		$('#china-district').hide();
+	}
 	$.ajax({
 		url: 'index.php?route=extension/total/shipping/country&country_id=' + this.value,
 		dataType: 'json',
@@ -200,6 +232,83 @@ $('select[name=\'country_id\']').on('change', function() {
 			}
 
 			$('select[name=\'zone_id\']').html(html);
+			
+			$('select[name=\'zone_id\']').trigger('change');
+		},
+		error: function(xhr, ajaxOptions, thrownError) {
+			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+		}
+	});
+});
+
+$('select[name=\'zone_id\']').on('change', function() {
+	$.ajax({
+		url: 'index.php?route=extension/total/shipping/zone&zone_id=' + this.value,
+		dataType: 'json',
+		beforeSend: function() {
+			$('select[name=\'zone_id\']').after(' <i class="fa fa-circle-o-notch fa-spin"></i>');
+		},
+		complete: function() {
+			$('.fa-spin').remove();
+		},
+		success: function(json) {
+
+			html = '<option value=""><?php echo $text_select; ?></option>';
+
+			if (json['city'] && json['city'] != '') {
+				for (i = 0; i < json['city'].length; i++) {
+					html += '<option value="' + json['city'][i]['city_id'] + '"';
+
+					if (json['city'][i]['city_id'] == '<?php echo $city_id; ?>') {
+						html += ' selected="selected"';
+					}
+
+					html += '>' + json['city'][i]['name'] + '</option>';
+				}
+			} else {
+				html += '<option value="0" selected="selected"><?php echo $text_none; ?></option>';
+			}
+
+			$('select[name=\'city_id\']').html(html);
+			
+			$('select[name=\'city_id\']').trigger('change');
+		},
+		error: function(xhr, ajaxOptions, thrownError) {
+			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+		}
+	});
+});
+
+$('select[name=\'city_id\']').on('change', function() {
+	$.ajax({
+		url: 'index.php?route=extension/total/shipping/city&city_id=' + this.value,
+		dataType: 'json',
+		beforeSend: function() {
+			$('select[name=\'city_id\']').after(' <i class="fa fa-circle-o-notch fa-spin"></i>');
+		},
+		complete: function() {
+			$('.fa-spin').remove();
+		},
+		success: function(json) {
+
+			html = '<option value=""><?php echo $text_select; ?></option>';
+
+			if (json['district'] && json['district'] != '') {
+				for (i = 0; i < json['district'].length; i++) {
+					html += '<option value="' + json['district'][i]['district_id'] + '"';
+
+					if (json['district'][i]['district_id'] == '<?php echo $district_id; ?>') {
+						html += ' selected="selected"';
+					}
+
+					html += '>' + json['district'][i]['name'] + '</option>';
+				}
+			} else {
+				html += '<option value="0" selected="selected"><?php echo $text_none; ?></option>';
+			}
+
+			$('select[name=\'district_id\']').html(html);
+			
 		},
 		error: function(xhr, ajaxOptions, thrownError) {
 			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
