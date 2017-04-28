@@ -50,10 +50,10 @@
         <li><?php echo $qq_nickname; ?></li>
         <?php } else { ?>
         <li><a href="<?php echo $qq_login_url; ?>"><span class="hidden-xs hidden-sm hidden-md"><img src="catalog/view/theme/default/image/qq_login.png"></span></a> </li>
-        <?php 
+        <?php
         	}
             }
-            } 
+            }
         ?>
         <li><a href="<?php echo $contact; ?>"><i class="fa fa-phone"></i></a> <span class="hidden-xs hidden-sm hidden-md"><?php echo $telephone; ?></span></li>
         <li class="dropdown"><a href="<?php echo $account; ?>" title="<?php echo $text_account; ?>" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $text_account; ?></span> <span class="caret"></span></a>
@@ -71,8 +71,6 @@
           </ul>
         </li>
         <li><a href="<?php echo $wishlist; ?>" id="wishlist-total" title="<?php echo $text_wishlist; ?>"><i class="fa fa-heart"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $text_wishlist; ?></span></a></li>
-        <li><a href="<?php echo $shopping_cart; ?>" title="<?php echo $text_shopping_cart; ?>"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $text_shopping_cart; ?></span></a></li>
-        <li><a href="<?php echo $checkout; ?>" title="<?php echo $text_checkout; ?>"><i class="fa fa-share"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $text_checkout; ?></span></a></li>
       </ul>
     </div>
   </div>
@@ -80,7 +78,7 @@
 <header>
   <div class="container">
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col-sm-5">
         <div id="logo">
           <?php if ($logo) { ?>
           <a href="<?php echo $home; ?>"><img src="<?php echo $logo; ?>" title="<?php echo $name; ?>" alt="<?php echo $name; ?>" class="img-responsive" /></a>
@@ -89,9 +87,8 @@
           <?php } ?>
         </div>
       </div>
-      <div class="col-sm-5"><?php echo $search; ?>
-      </div>
-      <div class="col-sm-3"><?php echo $cart; ?></div>
+      <div class="col-sm-5"><?php echo $search; ?></div>
+      <div class="col-sm-2"></div>
     </div>
   </div>
 </header>
