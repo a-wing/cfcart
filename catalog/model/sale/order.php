@@ -47,7 +47,7 @@ class ModelSaleOrder extends Model {
 			foreach ($order_product_query->rows as $product) {
 				$reward += $product['reward'];
 			}
-			
+
 			if ($order_query->row['affiliate_id']) {
 				$affiliate_id = $order_query->row['affiliate_id'];
 			} else {
@@ -84,14 +84,14 @@ class ModelSaleOrder extends Model {
 				'customer_id'             => $order_query->row['customer_id'],
 				'customer'                => $order_query->row['customer'],
 				'customer_group_id'       => $order_query->row['customer_group_id'],
-				'fullname'               => $order_query->row['fullname'],
+				'fullname'               	=> $order_query->row['fullname'],
 				'email'                   => $order_query->row['email'],
 				'telephone'               => $order_query->row['telephone'],
 				'fax'                     => $order_query->row['fax'],
 				'custom_field'            => json_decode($order_query->row['custom_field'], true),
-				'payment_fullname'       => $order_query->row['payment_fullname'],
+				'payment_fullname'       	=> $order_query->row['payment_fullname'],
 				'payment_company'         => $order_query->row['payment_company'],
-				'payment_address'       => $order_query->row['payment_address'],
+				'payment_address'       	=> $order_query->row['payment_address'],
 				'payment_postcode'        => $order_query->row['payment_postcode'],
 				'payment_city'            => $order_query->row['payment_city'],
 				'payment_zone_id'         => $order_query->row['payment_zone_id'],
@@ -105,7 +105,7 @@ class ModelSaleOrder extends Model {
 				'payment_custom_field'    => json_decode($order_query->row['payment_custom_field'], true),
 				'payment_method'          => $order_query->row['payment_method'],
 				'payment_code'            => $order_query->row['payment_code'],
-				'shipping_fullname'        => $order_query->row['shipping_fullname'],
+				'shipping_fullname'       => $order_query->row['shipping_fullname'],
 				'shipping_company'        => $order_query->row['shipping_company'],
 				'shipping_address'        => $order_query->row['shipping_address'],
 				'shipping_postcode'       => $order_query->row['shipping_postcode'],
@@ -128,7 +128,7 @@ class ModelSaleOrder extends Model {
 				'order_status_id'         => $order_query->row['order_status_id'],
 				'order_status'            => $order_query->row['order_status'],
 				'affiliate_id'            => $order_query->row['affiliate_id'],
-				'affiliate_fullname'     => $affiliate_fullname,
+				'affiliate_fullname'    	=> $affiliate_fullname,
 				'commission'              => $order_query->row['commission'],
 				'language_id'             => $order_query->row['language_id'],
 				'language_code'           => $language_code,

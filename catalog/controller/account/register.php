@@ -58,8 +58,12 @@ class ControllerAccountRegister extends Controller {
 
 			// Clear any previous login attempts for unregistered accounts.
 			$this->model_account_customer->deleteLoginAttempts($this->request->post['email']);
-
-			$this->customer->login($this->request->post['email'], $this->request->post['password']);
+			
+			if ($this->request->post['email']) {
+				$this->customer->login($this->request->post['email'], $this->request->post['password']);
+			} else {
+				$this->customer->login($this->request->post['telephone'], $this->request->post['password']);
+			}
 			
 			//Unset Third party login session
 			unset($this->session->data['qq_login_warning']);
@@ -340,13 +344,10 @@ class ControllerAccountRegister extends Controller {
 					$this->error['telephone'] = $this->language->get('error_telephone_exists');
 				} else {
 					// if sms code is not correct
-					if (isset($this->request->post['sms_code'])) {
-						$this->load->model('account/smsmobile');
-						if($this->model_account_smsmobile->verifySmsCode($this->request->post['telephone'], $this->request->post['sms_code']) == 0) {
-							$this->error['sms_code'] = $this->language->get('error_sms_code');
-						}
+					$this->load->model('account/smsmobile');
+					if($this->model_account_smsmobile->verifySmsCode($this->request->post['telephone'], $this->request->post['sms_code']) == 0) {
+						$this->error['sms_code'] = $this->language->get('error_sms_code');
 					}
-				
 				}
 				
 			}

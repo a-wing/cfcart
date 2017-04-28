@@ -114,15 +114,6 @@ class ControllerProductCategory extends Controller {
 			$data['button_continue'] = $this->language->get('button_continue');
 			$data['button_list'] = $this->language->get('button_list');
 			$data['button_grid'] = $this->language->get('button_grid');
-			////crowdfunding////
-			$this->load->language('extension/module/crowdfunding');
-			$data['text_fundingtotal'] = $this->language->get('text_fundingtotal');
-			$data['text_target'] = $this->language->get('text_target');
-			/////////
-			$data['currency'] = $this->language->get('currency');
-			$data['text_day'] = $this->language->get('text_day');
-			$data['day_remaining'] = $this->language->get('day_remaining');
-			////////////////////
 
 			// Set the last category breadcrumb
 			$data['breadcrumbs'][] = array(
@@ -218,56 +209,11 @@ class ControllerProductCategory extends Controller {
 				} else {
 					$rating = false;
 				}
-				////////////////////////////////
-				$model = $result['model'];
-					///////////////////////////////////////////
-					//crowdfunding progress
-					//////////////////////////////////////////
 
-					//$product_info = $this->model_catalog_product->getProduct($product_id);
-					//echo $product_info['name'];
-					
-					$filter_data = array(
-						'filter_date_start'	     => NULL,
-						'filter_date_end'	     => NULL,
-						'filter_order_status_id' => 5,
-						'start'                  => NULL,
-						'limit'                  => NULL
-					);
-					$resultsts = $this->model_catalog_product->getPurchased($filter_data);
-					//var_dump($results);
-					//echo "<br>";
-					$fundingtotal = 0;
-					foreach ($resultsts as $resultts) {
-						
-						if($result['name'] == $resultts['name']){
-			//echo "ABCD";
-			//$fundingtotal = $this->currency->format($result['total'], $this->config->get('config_currency'));
-							$fundingtotal = $resultts['total'];
-						}
-					}
-					//var_dump($fundingtotal);
-					///////////////////////////////////////////
-					//date-end
-					//////////////////////////////////////////
-					//echo $showtime=date("Y-m-d");
-					//$startdate=strtotime(date("Y-m-d"));
-					//$enddate=strtotime($product_info['date_end']);
-					//$days=round((strtotime($product_info['date_undercarriage'])-strtotime(date("Y-m-d")))/86400)+1;
-					$days=round((strtotime($result['date_undercarriage'])-strtotime(date("Y-m-d")))/86400)+1;
-					//echo $days;
-					//echo "<br/>";
-					//////////////////////////////////////////
 				$data['products'][] = array(
 					'product_id'  => $result['product_id'],
 					'thumb'       => $image,
 					'name'        => $result['name'],
-					///////////////////////////////////////
-					'fundingtotal'        => $fundingtotal,
-					'model'						 => $model,
-					'date_end'	  => $days,
-					
-					//////////////////////////////////////
 					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_product_description_length')) . '..',
 					'price'       => $price,
 					'special'     => $special,
